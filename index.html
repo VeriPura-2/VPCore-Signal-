@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Interactive UK Trials Supply Chain Data Flows with VeriPura CORE™, Signal TMS, TWIN (IOTA), Importers, Exporters, and UK Port Authorities.">
 <title>UK Trials Supply Chain Data Flows with VeriPura CORE™</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#fff;color:#12203A;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
@@ -71,7 +71,7 @@ svg{width:100%;height:auto;display:block}
 .svg-stage{position:relative;width:100%;background:#fff;border-radius:10px;overflow:hidden;touch-action:pan-y}
 .svg-stage.zoomed,.svg-stage.is-mobile{touch-action:none}
 .svg-stage.is-dragging{cursor:grabbing}
-.zoom-hud{position:absolute;right:10px;bottom:10px;display:flex;gap:6px;align-items:center;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);padding:4px;border-radius:999px;border:1.5px solid #C9D1DE;box-shadow:0 2px 8px rgba(18,32,58,.08)}
+.zoom-hud{position:absolute;right:10px;bottom:10px;display:flex;gap:6px;align-items:center;z-index:10;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:4px;border-radius:999px;border:1.5px solid #C9D1DE;box-shadow:0 2px 8px rgba(18,32,58,.08)}
 .zoom-hud button{font:inherit;font-size:13px;font-weight:700;min-width:36px;height:36px;padding:0 10px;border-radius:999px;border:1px solid #C9D1DE;background:#fff;color:#12203A;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1}
 .zoom-hud button:active{background:#12203A;color:#fff}
 .zoom-hud button:focus-visible{outline:3px solid #3F5FBF;outline-offset:2px}
@@ -88,8 +88,8 @@ svg{width:100%;height:auto;display:block}
  .touch-hint{display:block}
 }
 @media (max-width:900px) and (orientation:portrait){
- .svg-stage{height:46vh;height:clamp(310px,48vh,470px);border:1.5px solid #E2E7F0}
- .svg-stage svg{width:100%;height:100%}
+ .svg-stage{height:46vh;height:clamp(300px,48vh,470px);min-height:280px;border:1.5px solid #E2E7F0}
+ .svg-stage svg{width:100%;height:100%;display:block}
  #info{margin-top:8px;padding:12px 14px;min-height:120px}
  #info h2{font-size:16px}
  #info p,#info ul,#info .sample{font-size:14px}
@@ -103,9 +103,9 @@ svg{width:100%;height:auto;display:block}
  .bar input{width:17px;height:17px}
  .bar .lbl{display:none}
  .bar button{font-size:12.5px;padding:6px 11px;min-height:34px}
- .main-split{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,1fr);gap:8px;height:calc(100vh - 52px);height:calc(100dvh - 52px);align-items:stretch}
- .svg-stage{height:100%;border:1.5px solid #E2E7F0}
- .svg-stage svg{width:100%;height:100%}
+ .main-split{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,1fr);grid-template-rows:minmax(0,1fr);gap:8px;height:calc(100vh - 52px);height:calc(100dvh - 52px);min-height:230px;align-items:stretch}
+ .svg-stage{height:100%;min-height:220px;border:1.5px solid #E2E7F0}
+ .svg-stage svg{width:100%;height:100%;display:block}
  .zoom-hud{right:6px;bottom:6px;padding:3px;gap:4px}
  .zoom-hud button{min-width:30px;height:30px;font-size:12px;padding:0 8px}
  .touch-hint{display:none}
@@ -131,7 +131,7 @@ svg{width:100%;height:auto;display:block}
 <div class="svg-stage" id="stage">
 <div class="touch-hint" aria-hidden="true">Pinch or drag to explore &bull; Tap any box</div>
 <div class="zoom-hud" role="group" aria-label="Diagram zoom controls"><button type="button" id="z-out" aria-label="Zoom out">&minus;</button><button type="button" id="z-fit" aria-label="Fit diagram">Fit</button><button type="button" id="z-in" aria-label="Zoom in">+</button></div>
-<svg id="d" viewBox="0 0 1280 820" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="UK Trials supply chain data flows with VeriPura CORE"><defs>
+<svg id="d" width="1280" height="820" viewBox="0 0 1280 820" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="UK Trials supply chain data flows with VeriPura CORE"><defs>
 <marker id="m-orange" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E8862A"/></marker>
 <marker id="m-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D13B3B"/></marker>
 <marker id="m-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3F5FBF"/></marker>
@@ -357,7 +357,7 @@ svg{width:100%;height:auto;display:block}
 
 </svg>
 </div>
-<div id="info" aria-live="polite"></div>
+<div id="info" aria-live="polite"><h2>Click any box for details</h2><p>Step through how CORE™ works using the numbered buttons, switch VeriPura CORE™ on or off, or pause the animation.</p></div>
 </div>
 </div>
 <script>
@@ -510,7 +510,8 @@ function animateVB(target,instant){
  animRaf=requestAnimationFrame(tick);
 }
 function getDefaultVB(){
- if(mqPortrait.matches){
+ var isPort=mqPortrait.matches||(window.innerWidth<=900&&window.innerHeight>window.innerWidth);
+ if(isPort){
   return PORTRAIT_STEP_VB[st.step]||FULL_VB;
  }
  return FULL_VB;
@@ -544,10 +545,48 @@ document.getElementById('z-in').addEventListener('click',function(){zoomBy(0.75)
 document.getElementById('z-out').addEventListener('click',function(){zoomBy(1.333);});
 document.getElementById('z-fit').addEventListener('click',function(){animateVB(getDefaultVB(),false);});
 
-// Pointer pan & pinch-to-zoom on stage
+// Pointer + Touch pan & pinch-to-zoom on stage
 var ptrs=new Map();
 var gesture=null;
 var suppressClick=false;
+if(!window.PointerEvent){
+ var tGesture=null;
+ stage.addEventListener('touchstart',function(e){
+  if(e.target.closest('.zoom-hud'))return;
+  if(e.touches.length===1){
+   tGesture={type:'pan',startX:e.touches[0].clientX,startY:e.touches[0].clientY,startVB:{x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h},moved:false};
+  }else if(e.touches.length===2){
+   var d=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY)||1;
+   var mx=(e.touches[0].clientX+e.touches[1].clientX)/2;
+   var my=(e.touches[0].clientY+e.touches[1].clientY)/2;
+   tGesture={type:'pinch',startDist:d,midX:mx,midY:my,startVB:{x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h}};
+   suppressClick=true;
+  }
+ },{passive:true});
+ stage.addEventListener('touchmove',function(e){
+  if(!tGesture)return;
+  var rect=stage.getBoundingClientRect();
+  if(!rect.width||!rect.height)return;
+  if(tGesture.type==='pan'&&e.touches.length===1){
+   var dx=e.touches[0].clientX-tGesture.startX;
+   var dy=e.touches[0].clientY-tGesture.startY;
+   if(!tGesture.moved&&Math.hypot(dx,dy)<6)return;
+   tGesture.moved=true;suppressClick=true;
+   var sc=Math.max(tGesture.startVB.w/rect.width,tGesture.startVB.h/rect.height);
+   setVB(clampVB({x:tGesture.startVB.x-dx*sc,y:tGesture.startVB.y-dy*sc,w:tGesture.startVB.w,h:tGesture.startVB.h}));
+  }else if(tGesture.type==='pinch'&&e.touches.length===2){
+   var d=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY)||1;
+   var ratio=tGesture.startDist/d;
+   var mx=(e.touches[0].clientX+e.touches[1].clientX)/2;
+   var my=(e.touches[0].clientY+e.touches[1].clientY)/2;
+   var rx=Math.max(0,Math.min(1,(mx-rect.left)/rect.width));
+   var ry=Math.max(0,Math.min(1,(my-rect.top)/rect.height));
+   var nw=tGesture.startVB.w*ratio,nh=tGesture.startVB.h*ratio;
+   setVB(clampVB({x:tGesture.startVB.x+(tGesture.startVB.w-nw)*rx,y:tGesture.startVB.y+(tGesture.startVB.h-nh)*ry,w:nw,h:nh}));
+  }
+ },{passive:true});
+ stage.addEventListener('touchend',function(){tGesture=null;setTimeout(function(){suppressClick=false;},40);});
+}
 stage.addEventListener('pointerdown',function(e){
  if(e.target.closest('.zoom-hud'))return;
  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
