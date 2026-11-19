@@ -1,1 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UK Trials Data Flows with VeriPura CORE, five steps</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:#12203A;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1280px;margin:0 auto;padding:16px}
+svg{width:100%;height:auto;display:block}
+.edge{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.dashed{stroke-dasharray:7 6}
+.c-orange{stroke:#E8862A;marker-end:url(#m-orange)}
+.c-red{stroke:#D13B3B;marker-end:url(#m-red)}
+.c-blue{stroke:#3F5FBF;marker-end:url(#m-blue)}
+.c-green{stroke:#2E8B3E;marker-end:url(#m-green)}
+.c-teal{stroke:#0B6E5F;marker-end:url(#m-teal)}
+.c-purple{stroke:#7A3E9D;marker-end:url(#m-purple)}
+.bi.c-orange{marker-start:url(#m-orange)}
+.bi.c-red{marker-start:url(#m-red)}
+.bi.c-blue{marker-start:url(#m-blue)}
+.bi.c-green{marker-start:url(#m-green)}
+.bi.c-teal{marker-start:url(#m-teal)}
+.bi.c-purple{marker-start:url(#m-purple)}
+.node{cursor:pointer}
+.node:focus{outline:none}
+.node:focus-visible .shape{stroke:#12203A;stroke-width:3.5}
+.node.sel .shape{stroke:#12203A;stroke-width:3.5}
+[data-flows]{transition:opacity .2s}
+.dim{opacity:.13}
+.core-pill.dim{opacity:.25}
+.core-pill rect{transition:stroke .2s,stroke-width .2s}
+.core-pill.pill-active rect{stroke-width:1.8}
+.core-off .core-el{display:none}
+.core-off .edge.bi{marker-start:none}
+.core-off .bi-dot{display:none}
+.no-anim .dot{display:none}
+.bar{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:0 0 8px}
+.bar .grp{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar .lbl{font-size:13px;font-weight:700;color:#2F4FA0;text-transform:uppercase;letter-spacing:.04em;margin-right:2px}
+.bar button{font:inherit;font-size:14px;font-weight:600;padding:9px 14px;border-radius:999px;border:1.5px solid #C9D1DE;background:#fff;color:#12203A;cursor:pointer;min-height:44px}
+.bar button[aria-pressed="true"]{background:#12203A;color:#fff;border-color:#12203A}
+.bar .step[aria-pressed="true"]{background:#0B6E5F;border-color:#0B6E5F}
+.bar button:focus-visible,.bar input:focus-visible+span{outline:3px solid #3F5FBF;outline-offset:2px}
+.bar label{display:flex;gap:8px;align-items:center;font-size:14px;font-weight:600;min-height:44px;padding:0 6px;cursor:pointer}
+.bar input{width:20px;height:20px;accent-color:#0B6E5F}
+.sep{width:1px;height:28px;background:#C9D1DE;margin:0 4px}
+#info{margin-top:10px;border:1.5px solid #C9D1DE;border-radius:10px;padding:14px 18px;min-height:150px;background:#F6F7FA}
+#info h2{margin:0 0 4px;font-size:17px}
+#info p{margin:0 0 6px;font-size:15px;line-height:1.5;color:#3B4658}
+#info ul{margin:8px 0 0;padding-left:20px;font-size:15px;line-height:1.55;color:#12203A;columns:2;column-gap:36px}
+#info li{break-inside:avoid;margin-bottom:2px}
+#info .note{font-style:italic}
+.badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:8px;white-space:nowrap}
+.badge.avail{background:#DDF1E2;color:#1B5E2C}
+.badge.dev{background:#FFE9C7;color:#7A4A00}
+.chips{display:flex;flex-wrap:wrap;gap:10px 22px;margin:10px 0 2px}
+.chips div{font-size:14px;color:#3B4658;max-width:330px}
+.chip{display:inline-block;padding:3px 11px;border-radius:999px;font-size:13px;font-weight:700;margin-right:8px}
+.chip.m{background:#DDF1E2;color:#1B5E2C}
+.chip.f{background:#FFE9C7;color:#7A4A00}
+.chip.n{background:#E6E9EF;color:#3B4658}
+.sample{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin-top:8px;font-size:15px;line-height:1.5}
+.sample b{color:#12203A}
+.sample span{color:#3B4658}
+.fine{font-size:13px;color:#5A6577;margin-top:8px}
+@media (max-width:760px){#info ul{columns:1}}
+@media (prefers-reduced-motion:reduce){[data-flows]{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="bar" role="toolbar" aria-label="Diagram controls">
+<label><input type="checkbox" id="core" checked><span>VeriPura CORE&trade; on</span></label>
+<label><input type="checkbox" id="anim" checked><span>Animate data</span></label>
+</div>
+<div class="bar"><div class="grp" role="group" aria-label="How CORE works, five steps"><span class="lbl">How CORE&trade; works</span><button type="button" class="step" data-step="0" aria-pressed="true">Full workflow</button><button type="button" class="step" data-step="1" aria-pressed="false">1 Identify the Requirements</button><button type="button" class="step" data-step="2" aria-pressed="false">2 Check and chase</button><button type="button" class="step" data-step="3" aria-pressed="false">3 Confirm and share</button><button type="button" class="step" data-step="4" aria-pressed="false">4 Issue passport</button></div></div>
+<svg id="d" viewBox="0 0 1280 820" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="UK Trials supply chain data flows with VeriPura CORE"><defs>
+<marker id="m-orange" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E8862A"/></marker>
+<marker id="m-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D13B3B"/></marker>
+<marker id="m-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3F5FBF"/></marker>
+<marker id="m-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E8B3E"/></marker>
+<marker id="m-teal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0B6E5F"/></marker>
+<marker id="m-purple" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7A3E9D"/></marker>
+</defs>
+<text x="48" y="58" font-size="30" font-weight="700" fill="#12203A" text-anchor="start">UK Trials Supply Chain Data Flows with VeriPura CORE™</text>
 
+<!-- Column Headers -->
+<text x="128" y="112" font-size="15" font-weight="700" fill="#2F4FA0" text-anchor="middle" letter-spacing="0.3">VERIFICATION</text>
+<text x="510" y="112" font-size="16" font-weight="700" fill="#2F4FA0" text-anchor="middle" letter-spacing="0.3">PIPELINE &amp; INTAKE</text>
+<text x="1178" y="112" font-size="16" font-weight="700" fill="#2F4FA0" text-anchor="middle" letter-spacing="0.3">PORT AUTHORITY</text>
+
+<!-- Importers (Stacked on top of Core) -->
+<text x="480" y="150" font-size="12" font-weight="700" fill="#6B7588" text-anchor="middle" letter-spacing="0.8">IMPORTERS</text>
+<g class="node" id="n-meeder" data-info="meeder" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4" data-keep="" tabindex="0" role="button" aria-label="Meeder, importer and Approve/Reject"><rect class="shape" x="220" y="165" width="160" height="64" rx="10" fill="#fff" stroke="#C9D1DE" stroke-width="2"/><text x="300" y="197" font-size="20" font-weight="700" fill="#2B3A8C" text-anchor="middle">Meeder</text><text class="core-el" x="300" y="217" font-size="11" font-weight="600" fill="#0B5B4F" text-anchor="middle" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3">Approve/Reject</text><g class="core-el" data-flows="p1 p2 p3 p4 p5" data-steps="4"><rect x="250" y="206" width="100" height="16" rx="8" fill="#E8F5F2" stroke="#0B6E5F" stroke-width="1"/><text x="300" y="217.5" font-size="10" font-weight="700" fill="#0B5B4F" text-anchor="middle">Passport</text></g></g>
+<g class="node" id="n-sapphire" data-info="sapphire" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4" data-keep="" tabindex="0" role="button" aria-label="Sapphire, importer and Approve/Reject"><rect class="shape" x="400" y="165" width="160" height="64" rx="10" fill="#fff" stroke="#C9D1DE" stroke-width="2"/><text x="480" y="197" font-size="18" font-weight="700" fill="#2B3A8C" text-anchor="middle">Sapphire</text><text class="core-el" x="480" y="217" font-size="11" font-weight="600" fill="#0B5B4F" text-anchor="middle" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3">Approve/Reject</text><g class="core-el" data-flows="p1 p2 p3 p4 p5" data-steps="4"><rect x="430" y="206" width="100" height="16" rx="8" fill="#E8F5F2" stroke="#0B6E5F" stroke-width="1"/><text x="480" y="217.5" font-size="10" font-weight="700" fill="#0B5B4F" text-anchor="middle">Passport</text></g></g>
+<g class="node" id="n-ipl" data-info="ipl" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4" data-keep="" tabindex="0" role="button" aria-label="IPL, International Procurement &amp; Logistics, importer and Approve/Reject"><rect class="shape" x="580" y="165" width="160" height="64" rx="10" fill="#fff" stroke="#C9D1DE" stroke-width="2"/><text x="660" y="197" font-size="24" font-weight="700" fill="#2E8B3E" text-anchor="middle">IPL</text><text class="core-el" x="660" y="217" font-size="11" font-weight="600" fill="#0B5B4F" text-anchor="middle" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3">Approve/Reject</text><g class="core-el" data-flows="p1 p2 p3 p4 p5" data-steps="4"><rect x="610" y="206" width="100" height="16" rx="8" fill="#E8F5F2" stroke="#0B6E5F" stroke-width="1"/><text x="660" y="217.5" font-size="10" font-weight="700" fill="#0B5B4F" text-anchor="middle">Passport</text></g></g>
+
+<!-- Data Sources (Moved left) -->
+<text x="128" y="255" font-size="12" font-weight="700" fill="#6B7588" text-anchor="middle" letter-spacing="0.8">INDEPENDENT DATA SOURCES</text>
+<g class="node core-el" id="n-src-val" data-info="src-val" data-flows="p1 p2 p3 p4 p5" data-steps="3" data-keep="" tabindex="0" role="button" aria-label="Local validators">
+  <rect class="shape" x="48" y="275" width="160" height="28" rx="8" fill="#fff" stroke="#0B6E5F" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text x="128" y="294" font-size="12" font-weight="700" fill="#0B5B4F" text-anchor="middle">Validators</text>
+</g>
+<g class="node core-el" id="n-src-lab" data-info="src-lab" data-flows="p1 p2 p3 p4 p5" data-steps="2" data-keep="" tabindex="0" role="button" aria-label="Lab data">
+  <rect class="shape" x="48" y="330" width="160" height="28" rx="8" fill="#fff" stroke="#0B6E5F" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text x="128" y="349" font-size="12" font-weight="700" fill="#0B5B4F" text-anchor="middle">Lab data</text>
+</g>
+<g class="node core-el" id="n-src-gov" data-info="src-gov" data-flows="p1 p2 p3 p4 p5" data-steps="1 2" data-keep="" tabindex="0" role="button" aria-label="Government data">
+  <rect class="shape" x="48" y="385" width="160" height="28" rx="8" fill="#fff" stroke="#0B6E5F" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text x="128" y="404" font-size="12" font-weight="700" fill="#0B5B4F" text-anchor="middle">Government data</text>
+</g>
+
+<!-- Pipeline: VeriPura CORE (Center) and Signal (Right) Separate & Connected via API Bridge -->
+<g class="node core-el" id="n-core" data-info="core" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4" data-keep="" tabindex="0" role="button" aria-label="VeriPura CORE™">
+  <rect class="shape" x="250" y="275" width="245" height="130" rx="10" fill="#E8F5F2" stroke="#0B6E5F" stroke-width="2.4"/>
+  
+  <text x="372.5" y="308" font-size="21" font-weight="700" fill="#0B5B4F" text-anchor="middle">VeriPura CORE™</text>
+  <text x="372.5" y="326" font-size="11" font-weight="600" fill="#0B5B4F" text-anchor="middle">Intake Engine</text>
+  
+  <g class="core-pill" id="pill-id" data-active-step="1" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4">
+    <rect x="257" y="342" width="76" height="20" rx="10" fill="#DDF1E2" stroke="#1B5E2C" stroke-width="0"/>
+    <text x="295" y="355.5" font-size="9.5" font-weight="700" fill="#1B5E2C" text-anchor="middle">Identification</text>
+  </g>
+  
+  <g class="core-pill" id="pill-ev" data-active-step="2" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4">
+    <rect x="338" y="342" width="62" height="20" rx="10" fill="#FFE9C7" stroke="#7A4A00" stroke-width="0"/>
+    <text x="369" y="355.5" font-size="9.5" font-weight="700" fill="#7A4A00" text-anchor="middle">Evaluation</text>
+  </g>
+  
+  <g class="core-pill" id="pill-rec" data-active-step="3" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4">
+    <rect x="405" y="342" width="83" height="20" rx="10" fill="#DCE8FA" stroke="#1F2E7A" stroke-width="0"/>
+    <text x="446.5" y="355.5" font-size="9.5" font-weight="700" fill="#1F2E7A" text-anchor="middle">Recommendation</text>
+  </g>
+
+  <g class="core-el step-only" data-step-only="1" style="display:none">
+    <rect x="258.5" y="370" width="228" height="19" rx="9.5" fill="#FFFFFF" stroke="#0B6E5F" stroke-width="1.1"/>
+    <text x="372.5" y="382.8" font-size="8.8" font-weight="700" fill="#0B5B4F" text-anchor="middle">HS Code • Export/Import Regs • Buyer Certs</text>
+  </g>
+</g>
+
+<g class="node" id="n-signal" data-info="signal" data-flows="p1 p2 p3 p4 p5" data-steps="3 4" data-keep="" tabindex="0" role="button" aria-label="Signal">
+  <rect class="shape" x="535" y="275" width="225" height="130" rx="10" fill="#F4F7FB" stroke="#3F5FBF" stroke-width="2.4"/>
+  
+  <text x="647.5" y="336" font-size="26" font-weight="700" fill="#1F2E7A" text-anchor="middle">Signal</text>
+  <text x="647.5" y="356" font-size="11" font-weight="500" fill="#3B4658" text-anchor="middle">Freight Forwarder TMS</text>
+</g>
+
+<!-- API Bridge connecting separate CORE and Signal platforms -->
+<path id="e-core-sig" class="edge c-purple bi core-el" data-flows="p1 p2 p3 p4 p5" data-steps="3 4" d="M495,346 H535"/>
+<g class="core-el" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4">
+  <rect x="481" y="317" width="68" height="16" rx="8" fill="#F8F5FC" stroke="#7A3E9D" stroke-width="1.1"/>
+  <text x="515" y="328.2" font-size="9.5" font-weight="700" fill="#7A3E9D" text-anchor="middle">API Bridge</text>
+  <text x="515" y="361" font-size="9" font-weight="600" fill="#7A3E9D" text-anchor="middle">2-way</text>
+</g>
+
+
+<!-- Exporters (Below Boxes, aligned to left border of Validators at x=48) -->
+<text x="409" y="666" font-size="12" font-weight="700" fill="#6B7588" text-anchor="middle" letter-spacing="0.8">EXPORTERS</text>
+<g class="node" id="n-p1" data-info="p1" data-flows="p1" data-steps="1 2 3 4" data-keep="" tabindex="0" role="button" aria-label="Fresh plant and animal products, Netherlands"><rect class="shape" x="48" y="560" width="142" height="86" rx="8" fill="#fff" stroke="#C9D1DE" stroke-width="1.6"/><text x="119" y="579" font-size="10" font-weight="600" fill="#6B7588" text-anchor="middle" letter-spacing="0.8">NETHERLANDS</text><text x="119" y="597" font-size="13" font-weight="700" fill="#12203A" text-anchor="middle">Fresh plant &amp;</text><text x="119" y="614" font-size="13" font-weight="700" fill="#12203A" text-anchor="middle">animal products</text><g class="core-el" data-flows="p1" data-steps="4"><rect x="69" y="626" width="100" height="16" rx="8" fill="#E8F5F2" stroke="#0B6E5F" stroke-width="1"/><text x="119" y="637.5" font-size="10" font-weight="700" fill="#0B5B4F" text-anchor="middle">Passport</text></g></g>
+<g class="node" id="n-p2" data-info="p2" data-flows="p2" data-steps="1 2 3 4" data-keep="" tabindex="0" role="button" aria-label="Poultry products, Poland"><rect class="shape" x="202" y="560" width="132" height="86" rx="8" fill="#fff" stroke="#C9D1DE" stroke-width="1.6"/><text x="268" y="579" font-size="10" font-weight="600" fill="#6B7588" text-anchor="middle" letter-spacing="0.8">POLAND</text><text x="268" y="605" font-size="13" font-weight="700" fill="#12203A" text-anchor="middle">Poultry products</text><g class="core-el" data-flows="p2" data-steps="4"><rect x="218" y="626" width="100" height="16" rx="8" fill="#E8F5F2" stroke="#0B6E5F" stroke-width="1"/><text x="268" y="637.5" font-size="10" font-weight="700" fill="#0B5B4F" text-anchor="middle">Passport</text></g></g>
+<g class="node" id="n-p3" data-info="p3" data-flows="p3" data-steps="1 2 3 4" data-keep="" tabindex="0" role="button" aria-label="Minerva Beef, Brazil"><rect class="shape" x="346" y="560" width="132" height="86" rx="8" fill="#fff" stroke="#C9D1DE" stroke-width="1.6"/><text x="412" y="579" font-size="10" font-weight="600" fill="#6B7588" text-anchor="middle" letter-spacing="0.8">BRAZIL</text><text x="412" y="605" font-size="13" font-weight="700" fill="#12203A" text-anchor="middle">Minerva Beef</text><g class="core-el" data-flows="p3" data-steps="4"><rect x="362" y="626" width="100" height="16" rx="8" fill="#E8F5F2" stroke="#0B6E5F" stroke-width="1"/><text x="412" y="637.5" font-size="10" font-weight="700" fill="#0B5B4F" text-anchor="middle">Passport</text></g></g>
+<g class="node" id="n-p4" data-info="p4" data-flows="p4" data-steps="1 2 3 4" data-keep="" tabindex="0" role="button" aria-label="Berries, Morocco"><rect class="shape" x="490" y="560" width="124" height="86" rx="8" fill="#fff" stroke="#C9D1DE" stroke-width="1.6"/><text x="552" y="579" font-size="10" font-weight="600" fill="#6B7588" text-anchor="middle" letter-spacing="0.8">MOROCCO</text><text x="552" y="605" font-size="13" font-weight="700" fill="#12203A" text-anchor="middle">Berries</text><g class="core-el" data-flows="p4" data-steps="4"><rect x="502" y="626" width="100" height="16" rx="8" fill="#E8F5F2" stroke="#0B6E5F" stroke-width="1"/><text x="552" y="637.5" font-size="10" font-weight="700" fill="#0B5B4F" text-anchor="middle">Passport</text></g></g>
+<g class="node" id="n-p5" data-info="p5" data-flows="p5" data-steps="1 2 3 4" data-keep="" tabindex="0" role="button" aria-label="Cut flowers and plants, Netherlands"><rect class="shape" x="626" y="560" width="144" height="86" rx="8" fill="#fff" stroke="#C9D1DE" stroke-width="1.6"/><text x="698" y="579" font-size="10" font-weight="600" fill="#6B7588" text-anchor="middle" letter-spacing="0.8">NETHERLANDS</text><text x="698" y="597" font-size="13" font-weight="700" fill="#12203A" text-anchor="middle">Cut flowers &amp;</text><text x="698" y="614" font-size="13" font-weight="700" fill="#12203A" text-anchor="middle">plants</text><g class="core-el" data-flows="p5" data-steps="4"><rect x="648" y="626" width="100" height="16" rx="8" fill="#E8F5F2" stroke="#0B6E5F" stroke-width="1"/><text x="698" y="637.5" font-size="10" font-weight="700" fill="#0B5B4F" text-anchor="middle">Passport</text></g></g>
+
+<!-- TWIN (Underneath Core & Signal, with IOTA Document Hash Anchor) -->
+<g class="node" id="n-twin" data-info="twin" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4" data-keep="1 2 3 4" tabindex="0" role="button" aria-label="TWIN, Trade Worldwide Information Network, IOTA document hash anchor">
+  <rect class="shape" x="440" y="438" width="320" height="74" rx="10" fill="#0F1B2D" stroke="#0F1B2D" stroke-width="2"/>
+  <text x="600" y="462" font-size="22" font-weight="700" fill="#FFFFFF" text-anchor="middle">TWIN</text>
+  <text x="600" y="479" font-size="10.5" font-weight="500" fill="#C8D3E6" text-anchor="middle">IOTA blockchain transport layer</text>
+  <rect x="454" y="486" width="292" height="19" rx="9.5" fill="#1A2E4C" stroke="#385B8C" stroke-width="1"/>
+  <text x="600" y="499" font-size="10" font-weight="700" fill="#7CE0C3" text-anchor="middle" letter-spacing="0.2"># Document Hashes &amp; IOTA Authentication</text>
+</g>
+
+<!-- Right Side Nodes -->
+<g class="node" id="n-isn" data-info="isn" data-flows="p1 p2 p3 p4 p5" data-steps="4" data-keep="" tabindex="0" role="button" aria-label="Information Sharing Network">
+  <ellipse class="shape" cx="990" cy="340" rx="85" ry="60" fill="#F3F1B8" stroke="#C9C66A" stroke-width="2"/>
+  <text x="990" y="336" font-size="14" font-weight="700" fill="#5C5A1E" text-anchor="middle">Information</text>
+  <text x="990" y="354" font-size="14" font-weight="700" fill="#5C5A1E" text-anchor="middle">Sharing Network</text>
+</g>
+<g class="node" id="n-ash" data-info="ash" data-flows="p1 p2 p3 p4 p5" data-steps="4" data-keep="" tabindex="0" role="button" aria-label="Ashford Port Health">
+  <rect class="shape" x="1118" y="170" width="124" height="100" rx="10" fill="#fff" stroke="#9CC3E0" stroke-width="2"/>
+  <text x="1180" y="212" font-size="16" font-weight="700" fill="#1B6FA8" text-anchor="middle">Ashford</text>
+  <text x="1180" y="232" font-size="14" font-weight="700" fill="#1B6FA8" text-anchor="middle">Port Health</text>
+  
+</g>
+<g class="node" id="n-suf" data-info="suf" data-flows="p1 p2 p3 p4 p5" data-steps="4" data-keep="" tabindex="0" role="button" aria-label="Suffolk Coastal Port Health">
+  <rect class="shape" x="1118" y="478" width="124" height="84" rx="10" fill="#fff" stroke="#9CC3E0" stroke-width="2"/>
+  <text x="1180" y="512" font-size="14" font-weight="700" fill="#1B6FA8" text-anchor="middle">Suffolk Coastal</text>
+  <text x="1180" y="531" font-size="14" font-weight="700" fill="#1B6FA8" text-anchor="middle">Port Health</text>
+  
+  
+</g>
+<g class="node" id="n-mcp" data-info="mcp" data-flows="p1 p2" data-steps="4" data-keep="" tabindex="0" role="button" aria-label="MCP plc">
+  <rect class="shape" x="915" y="470" width="150" height="86" rx="10" fill="#fff" stroke="#9CC3E0" stroke-width="2"/>
+  <text x="990" y="498" font-size="17" font-weight="700" fill="#1B6FA8" text-anchor="middle">MCP plc</text>
+  <text x="990" y="516" font-size="10.5" font-weight="500" fill="#3B4658" text-anchor="middle">Port community systems</text>
+  <text x="990" y="540" font-size="14" font-weight="700" fill="#1B6FA8" text-anchor="middle">Destin8</text>
+</g>
+
+<!-- Bidirectional Importer <-> CORE Paths -->
+<path id="e-imp-mee" class="edge c-orange bi" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4" d="M300,229 V275"/>
+<path id="e-imp-sap" class="edge c-orange bi" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4" d="M480,229 V240 H420 V275"/>
+<path id="e-imp-ipl" class="edge c-orange bi" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4" d="M660,229 V255 H465 V275"/>
+
+<!-- Bidirectional Exporter <-> CORE Paths routed around TWIN cleanly -->
+<path id="e-sup-p1" class="edge c-blue bi" data-flows="p1" data-steps="1 2 3 4" d="M119,560 V518 H265 V405"/>
+<path id="e-sup-p2" class="edge c-blue bi" data-flows="p2" data-steps="1 2 3 4" d="M268,560 V536 H305 V405"/>
+<path id="e-sup-p3" class="edge c-blue bi" data-flows="p3" data-steps="1 2 3 4" d="M412,560 V542 H345 V405"/>
+<path id="e-sup-p4" class="edge c-blue bi" data-flows="p4" data-steps="1 2 3 4" d="M552,560 V530 H385 V405"/>
+<path id="e-sup-p5" class="edge c-blue bi" data-flows="p5" data-steps="1 2 3 4" d="M698,560 V518 H425 V405"/>
+<!-- Data Sources <-> VeriPura CORE Paths -->
+<path id="e-ds-val" class="edge c-teal bi core-el" data-flows="p1 p2 p3 p4 p5" data-steps="3" d="M208,289 H250"/>
+<path id="e-ds-lab" class="edge c-teal bi core-el" data-flows="p1 p2 p3 p4 p5" data-steps="2" d="M208,344 H250"/>
+<path id="e-ds-gov" class="edge c-teal bi core-el" data-flows="p1 p2 p3 p4 p5" data-steps="1 2" d="M208,399 H250"/>
+
+<!-- Two-way Pipelines: CORE <-> TWIN and Signal <-> TWIN (Hashes & IOTA Authentication) -->
+<path id="e-core-twin" class="edge c-teal bi core-el" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4" d="M466,405 V438"/>
+<g class="core-el" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4">
+  <rect x="474" y="406" width="102" height="14" rx="7" fill="#E8F5F2" stroke="#0B6E5F" stroke-width="1"/>
+  <text x="525" y="416" font-size="9" font-weight="700" fill="#0B5B4F" text-anchor="middle"># Hash Write &amp; Read</text>
+  <rect x="474" y="422" width="102" height="14" rx="7" fill="#0F1B2D" stroke="#385B8C" stroke-width="1"/>
+  <text x="525" y="432" font-size="9" font-weight="700" fill="#7CE0C3" text-anchor="middle">IOTA Auth &amp; Verify</text>
+</g>
+<path id="e-sig-twin" class="edge c-green bi" data-flows="p1 p2 p3 p4 p5" data-steps="3 4" d="M700,405 V438"/>
+
+
+<!-- TWIN -> ISN & Health -->
+<path id="e-twin-isn" class="edge c-green bi" data-flows="p1 p2 p3 p4 p5" data-steps="4" d="M760,468 H850 V340 H905"/>
+<path id="e-twin-mcp" class="edge c-green dashed" data-flows="p1 p2" data-steps="4" d="M760,484 H915"/>
+<path id="e-isn-ash" class="edge c-green" data-flows="p1 p2 p3 p4 p5" data-steps="4" d="M1075,340 H1090 V220 H1118"/>
+<path id="e-isn-suf" class="edge c-green" data-flows="p1 p2 p3 p4 p5" data-steps="4" d="M1075,340 H1090 V520 H1118"/>
+
+
+
+
+<!-- Animations for Importer flow (Orange, 50% speed) -->
+<circle class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"><animateMotion dur="4.4s" repeatCount="indefinite"><mpath href="#e-imp-mee"/></animateMotion></circle>
+<circle class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion keyPoints="1;0" keyTimes="0;1" calcMode="linear" dur="4.4s" repeatCount="indefinite"><mpath href="#e-imp-mee"/></animateMotion></circle>
+<circle class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"><animateMotion dur="4.4s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-imp-mee"/></animateMotion></circle>
+<circle class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"><animateMotion dur="8.5s" repeatCount="indefinite"><mpath href="#e-imp-sap"/></animateMotion></circle>
+<circle class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion keyPoints="1;0" keyTimes="0;1" calcMode="linear" dur="8.5s" repeatCount="indefinite"><mpath href="#e-imp-sap"/></animateMotion></circle>
+<circle class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"><animateMotion dur="8.5s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-imp-sap"/></animateMotion></circle>
+<circle class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"><animateMotion dur="19.3s" repeatCount="indefinite"><mpath href="#e-imp-ipl"/></animateMotion></circle>
+<circle class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion keyPoints="1;0" keyTimes="0;1" calcMode="linear" dur="19.3s" repeatCount="indefinite"><mpath href="#e-imp-ipl"/></animateMotion></circle>
+<circle class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"><animateMotion dur="19.3s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-imp-ipl"/></animateMotion></circle>
+
+<!-- Animations for Supplier/Exporter flow (Blue, 50% speed) -->
+<circle class="dot" r="4.6" fill="#3F5FBF" data-flows="p1" data-steps="1 2 3"><animateMotion dur="24.1s" repeatCount="indefinite"><mpath href="#e-sup-p1"/></animateMotion></circle>
+<circle class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p1" data-steps="1 2 3 4"><animateMotion dur="24.1s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-sup-p1"/></animateMotion></circle>
+<circle class="dot" r="4.6" fill="#3F5FBF" data-flows="p2" data-steps="1 2 3"><animateMotion dur="15.4s" repeatCount="indefinite"><mpath href="#e-sup-p2"/></animateMotion></circle>
+<circle class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p2" data-steps="1 2 3 4"><animateMotion dur="15.4s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-sup-p2"/></animateMotion></circle>
+<circle class="dot" r="4.6" fill="#3F5FBF" data-flows="p3" data-steps="1 2 3"><animateMotion dur="17.8s" repeatCount="indefinite"><mpath href="#e-sup-p3"/></animateMotion></circle>
+<circle class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p3" data-steps="1 2 3 4"><animateMotion dur="17.8s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-sup-p3"/></animateMotion></circle>
+<circle class="dot" r="4.6" fill="#3F5FBF" data-flows="p4" data-steps="1 2 3"><animateMotion dur="25.8s" repeatCount="indefinite"><mpath href="#e-sup-p4"/></animateMotion></circle>
+<circle class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p4" data-steps="1 2 3 4"><animateMotion dur="25.8s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-sup-p4"/></animateMotion></circle>
+<circle class="dot" r="4.6" fill="#3F5FBF" data-flows="p5" data-steps="1 2 3"><animateMotion dur="34.2s" repeatCount="indefinite"><mpath href="#e-sup-p5"/></animateMotion></circle>
+<circle class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p5" data-steps="1 2 3 4"><animateMotion dur="34.2s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-sup-p5"/></animateMotion></circle>
+<!-- Internal Flow (Purple, 50% speed) -->
+<circle class="dot" r="4.6" fill="#7A3E9D" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"><animateMotion dur="4.0s" repeatCount="indefinite"><mpath href="#e-core-sig"/></animateMotion></circle>
+<circle class="dot bi-dot" r="4.6" fill="#7A3E9D" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"><animateMotion dur="4.0s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-core-sig"/></animateMotion></circle>
+
+<!-- Animations for Data Sources flow (Teal, 50% speed) -->
+<circle class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="3"><animateMotion dur="3.0s" repeatCount="indefinite"><mpath href="#e-ds-val"/></animateMotion></circle>
+<circle class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="3"><animateMotion dur="3.0s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-ds-val"/></animateMotion></circle>
+<circle class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="2"><animateMotion dur="3.4s" repeatCount="indefinite"><mpath href="#e-ds-lab"/></animateMotion></circle>
+<circle class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="2"><animateMotion dur="3.4s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-ds-lab"/></animateMotion></circle>
+<circle class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2"><animateMotion dur="3.8s" repeatCount="indefinite"><mpath href="#e-ds-gov"/></animateMotion></circle>
+<circle class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2"><animateMotion dur="3.8s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-ds-gov"/></animateMotion></circle>
+
+<!-- Animations for Two-Way Hash & IOTA Authentication + Downstream (Teal & Green, 50% speed) -->
+<circle class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4"><animateMotion dur="4.0s" repeatCount="indefinite"><mpath href="#e-core-twin"/></animateMotion></circle>
+<circle class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4"><animateMotion dur="4.0s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-core-twin"/></animateMotion></circle>
+<circle class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"><animateMotion dur="5.0s" repeatCount="indefinite"><mpath href="#e-sig-twin"/></animateMotion></circle>
+<circle class="dot bi-dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"><animateMotion dur="5.0s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-sig-twin"/></animateMotion></circle>
+
+<circle class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion dur="8.0s" repeatCount="indefinite"><mpath href="#e-twin-isn"/></animateMotion></circle>
+<circle class="dot bi-dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion dur="8.0s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-twin-isn"/></animateMotion></circle>
+
+<circle class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2" data-steps="4"><animateMotion dur="5.0s" repeatCount="indefinite"><mpath href="#e-twin-mcp"/></animateMotion></circle>
+<circle class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion dur="7.0s" repeatCount="indefinite"><mpath href="#e-isn-ash"/></animateMotion></circle>
+<circle class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion dur="8.0s" repeatCount="indefinite"><mpath href="#e-isn-suf"/></animateMotion></circle>
+
+<!-- Legend Updates -->
+<line x1="48" y1="718" x2="82" y2="718" stroke="#E8862A" stroke-width="2.6" stroke-linecap="round"/>
+<text x="92" y="722" font-size="12.5" font-weight="500" fill="#3B4658" text-anchor="start">Importers interacting with CORE</text>
+<line x1="420" y1="718" x2="454" y2="718" stroke="#3F5FBF" stroke-width="2.6" stroke-linecap="round"/>
+<text x="464" y="722" font-size="12.5" font-weight="500" fill="#3B4658" text-anchor="start">Exporters submitting to CORE</text>
+<line x1="770" y1="718" x2="804" y2="718" stroke="#7A3E9D" stroke-width="2.6" stroke-linecap="round" marker-start="url(#m-purple)" marker-end="url(#m-purple)"/>
+<text x="814" y="722" font-size="12.5" font-weight="500" fill="#3B4658" text-anchor="start">API bridge between CORE and Signal TMS</text>
+
+<line x1="48" y1="744" x2="82" y2="744" stroke="#0B6E5F" stroke-width="2.6" stroke-linecap="round"/>
+<text x="92" y="748" font-size="12.5" font-weight="500" fill="#3B4658" text-anchor="start">Automated checks with independent data sources</text>
+<line x1="420" y1="744" x2="454" y2="744" stroke="#2E8B3E" stroke-width="2.6" stroke-linecap="round"/>
+<text x="464" y="748" font-size="12.5" font-weight="500" fill="#3B4658" text-anchor="start">Verified data via TWIN downstream</text>
+<line x1="770" y1="744" x2="804" y2="744" stroke="#0B6E5F" stroke-width="2.6" stroke-linecap="round" marker-start="url(#m-teal)" marker-end="url(#m-teal)"/>
+<text x="814" y="748" font-size="12.5" font-weight="500" fill="#3B4658" text-anchor="start">Two-way hash sync &amp; IOTA authentication via TWIN</text>
+
+</svg><div id="info" aria-live="polite"></div></div>
+<script>
+(function(){
+var D={"info": {
+ "meeder": {"t": "Meeder (Approve/Reject)", "p": "Importer in the UK trials. Issues Purchase Orders through CORE™, acts as the Approve/Reject authority in Phase 4, and receives the finalized Trade Passport in Phase 5 for internal audit and compliance records."},
+ "sapphire": {"t": "Sapphire (Approve/Reject)", "p": "Importer in the UK trials. Issues Purchase Orders through CORE™, acts as the Approve/Reject authority in Phase 4, and receives the finalized Trade Passport in Phase 5 for internal audit and compliance records."},
+ "ipl": {"t": "IPL (Approve/Reject)", "p": "Importer in the UK trials. Issues Purchase Orders through CORE™, acts as the Approve/Reject authority in Phase 4, and receives the finalized Trade Passport in Phase 5 for internal audit and compliance records."},
+ "p1": {"t": "Fresh plant and animal products, Netherlands", "p": "Exporter data is submitted back-and-forth bidirectionally into the central VeriPura CORE™ intake engine."},
+ "p2": {"t": "Poultry products, Poland", "p": "Exporter data is submitted back-and-forth bidirectionally into the central VeriPura CORE™ intake engine."},
+ "p3": {"t": "Minerva Beef, Brazil", "p": "Exporter data is submitted back-and-forth bidirectionally into the central VeriPura CORE™ intake engine."},
+ "p4": {"t": "Berries, Morocco", "p": "Exporter data is submitted back-and-forth bidirectionally into the central VeriPura CORE™ intake engine."},
+ "p5": {"t": "Cut flowers and plants, Netherlands", "p": "Exporter data is submitted back-and-forth bidirectionally into the central VeriPura CORE™ intake engine."},
+ "twin": {"t": "TWIN, Trade Worldwide Information Network", "p": "IOTA blockchain transport layer situated underneath CORE and Signal. Data flows bidirectionally between TWIN/IOTA and both CORE and Signal across Phases 1–4: document hashes and checklist/requirement anchors are written on-chain for a complete audit trail, while hashes and IOTA decentralized identity/authentication proofs flow back to verify participants and document integrity."},
+ "signal": {"t": "Signal", "p": "Separate Freight Forwarder Transport Management System (TMS) connected to VeriPura CORE™ via an API bridge. Transport records and verification status sync two-way with CORE, while Signal also exchanges document hashes and IOTA authentication proofs bidirectionally with TWIN/IOTA."},
+ "core": {"t": "VeriPura CORE™", "p": "Standalone Central Intake Engine connected to Signal via a two-way API bridge, structured around three progressive stages: Identification (Phase 1 regulatory, HS code & buyer requirement checks), Evaluation (Phase 3 document & data cross-checks), and Recommendation (Phase 4 findings & drafted fixes). It also exchanges document hashes and IOTA authentication proofs bidirectionally with TWIN across Phases 1–4."},
+ "src-val": {"t": "Validators", "p": "Independent bodies in the country of origin, plus public certifier and national registers.", "items": [["Certifier and national registers", "avail"], ["Recognised halal bodies, checked against official lists", "avail"], ["Lapsed recognition flagged", "avail"]]},
+ "src-lab": {"t": "Lab data", "p": "Lab reports, including direct lab API feeds.", "items": [["Lab accreditation checks", "avail"], ["Sample-to-container matching", "avail"], ["Limits for pesticides, heavy metals and pathogens", "avail"]]},
+ "src-gov": {"t": "Government data", "p": "Official government regulations, tariff schedules, lists, and alerts that CORE™ checks in Phase 1 (Identification) and Phase 3 (Evaluation).", "items": [["Exporting & importing country regulatory requirements", "avail"], ["Customs tariff schedules & HS code rules", "avail"], ["Food alerts, including RASFF and FDA", "avail"], ["Government lists of banned entities", "avail"], ["Forced-labour screening", "avail"], ["Sanctions screening", "dev"]]},
+ "isn": {"t": "Information Sharing Network", "p": "The UK government network that shares trade data with the port authorities on the right. Border staff can verify a CORE™ Trade Passport and its IOTA hash anchor by QR code."},
+ "ash": {"t": "Ashford Port Health", "p": "Port health authority. Receives data through the Information Sharing Network."},
+ "suf": {"t": "Suffolk Coastal Port Health", "p": "Port health authority. Receives data through the Information Sharing Network."},
+ "mcp": {"t": "MCP plc", "p": "Port community system provider. Receives data from TWIN (dashed line)."}
+},
+"steps": [
+ {"t": "Identify the Requirements", "p": "The importer issues a Purchase Order (PO) through VeriPura CORE™ to the exporter. CORE™'s Identification engine runs an internal check of exporting and importing country regulations (via Government data), HS code classifications, and additional buyer-required certifications to generate the required-document checklist for both parties, anchoring the initial requirement bundle on IOTA via TWIN.", "items": [["Importer issues Purchase Order (PO) through CORE™ with buyer requirements"], ["Exporting country regulatory requirements checked (Government data)"], ["Importing country regulatory requirements checked (Government data)"], ["HS code and customs tariff classification verified"], ["Additional importer/buyer certifications identified (e.g., organic, halal, quality schemes)"], ["Tailored required-document checklist delivered to both importer and exporter"]]},
+ {"t": "Check and chase", "p": "Exporters, importers, and data sources submit documents directly into the central VeriPura CORE™ engine. CORE™ cross-checks documents against each other and against government and lab data sources for expiry, alterations, and compliance—automatically chasing any missing or incomplete documents. Any newly supplied or updated documents are hashed on IOTA via TWIN—with hashes and IOTA authentication proofs flowing back to verify integrity.", "items": [["Invoices, packing lists, certs, declarations, lab reports"], ["Weights, dates, names and certificate numbers agree across documents", "avail"], ["Expiry tracking, with alerts at 30, 14 and 7 days", "avail"], ["Missing or incomplete items chased directly with the importer or exporter", "avail"], ["New (previously missing) or updated documents hashed on IOTA via TWIN for a complete audit trail", "avail"], ["Alterations: handwriting, stamps, signatures, post-issue edits", "avail"], ["Lab reports: accreditation, sample-to-container match, limits", "avail"], ["Forced-labour screening", "avail"], ["Sanctions screening", "dev"], ["Cold-chain sensor checks", "dev"], ["GS1 and EPCIS traceability checks", "dev"], ["Label claim review", "dev"]]},
+ {"t": "Confirm and share", "p": "Validators work in this phase to verify certifiers and religious bodies. VeriPura CORE™ shares findings—with proofs and drafted fixes—with the importer for confirmation (Approve/Reject), syncs status across the API bridge with Signal TMS, and continues two-way hash and IOTA authentication exchanges with TWIN/IOTA.", "items": [["3rd party validators verify certifications", "avail"], ["Updated or newly supplied documents hashed on IOTA via TWIN for a complete audit trail", "avail"]]},
+ {"t": "Issue passport", "p": "Once confirmed by the importer, VeriPura CORE™ anchors the final approved document bundle hash on the IOTA blockchain via TWIN—completing the end-to-end audit trail—and issues the digital Trade Passport to the importer and exporter."}
+],
+"outcomes": [["m", "Matched", "Documents agree and the lookup succeeded."], ["f", "Flagged", "A mismatch or gap needs review."], ["n", "Not checked", "The check could not run. It is never shown as a match."]],
+"prods": {
+ "p1": {"name": "Fresh plant & animal products", "origin": "Netherlands"},
+ "p2": {"name": "Poultry products", "origin": "Poland"},
+ "p3": {"name": "Minerva Beef", "origin": "Brazil"},
+ "p4": {"name": "Berries", "origin": "Morocco"},
+ "p5": {"name": "Cut flowers & plants", "origin": "Netherlands"}
+},
+"samples": {
+ "p1": {"c": [7, 1, 1], "t": "Carton count differs", "e": "Phytosanitary certificate: 240 cartons. Packing list: 204 cartons.", "r": "Quantities must agree across documents.", "x": "Ask the exporter to confirm the carton count and reissue the incorrect document.", "n": "Certifier register lookup was unavailable."},
+ "p2": {"c": [6, 1, 1], "t": "Approval expires before arrival", "e": "Establishment approval expires in 6 days. Planned arrival is in 9 days.", "r": "Documents must be valid on arrival. Alert threshold: 7 days.", "x": "Request a renewed approval before dispatch.", "n": "Cold-chain sensor check (in development)."},
+ "p3": {"c": [9, 1, 0], "t": "Missing health certificate", "e": "Veterinary health certificate is missing from the submitted bundle.", "r": "Beef exports require a valid veterinary certificate.", "x": "Request the exporter to upload the missing certificate.", "n": ""},
+ "p4": {"c": [8, 1, 1], "t": "Lab sample does not match the container", "e": "Lab report names container ABCU 123456 7. Bill of lading shows ABCU 123465 7.", "r": "The lab sample must match the container shipped.", "x": "Ask the lab to confirm the container and reissue the report.", "n": "One lab parameter was missing from the report."},
+ "p5": {"c": [7, 1, 0], "t": "Certificate number differs", "e": "Phytosanitary certificate: NL-PH-48213. Commercial invoice: NL-PH-48231.", "r": "Certificate numbers must agree across documents.", "x": "Ask the exporter to correct the invoice reference.", "n": ""}
+},
+"rev": "Importer decides what happens next. CORE™ never approves or clears a shipment."};
+
+var svg=document.getElementById('d'),box=document.getElementById('info');
+var st={flow:'all',step:0,key:null,nodeEl:null};
+function E(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
+function list(arr){var ul=E('ul');arr.forEach(function(i){var li=E('li');li.appendChild(document.createTextNode(i[0]));if(i[1]){li.appendChild(E('span','badge '+(i[1]==='dev'?'dev':'avail'),i[1]==='dev'?'In development':'Available'));}ul.appendChild(li);});return ul;}
+function head(t,p){box.appendChild(E('h2',null,t));if(p)box.appendChild(E('p',null,p));}
+function sample(){
+ var k=st.flow==='all'?'p3':st.flow,s=D.samples[k];
+ box.appendChild(E('p','fine','Illustrative example findings shared with the importer for confirmation (not a real consignment).'));
+ var row=E('div');
+ [['m','Matched',s.c[0]],['f','Flagged',s.c[1]],['n','Not checked',s.c[2]]].forEach(function(x){row.appendChild(E('span','chip '+x[0],x[1]+' '+x[2]));});
+ box.appendChild(row);
+ var g=E('div','sample');
+ function r(a,b){g.appendChild(E('b',null,a));g.appendChild(E('span',null,b));}
+ r('Flagged',s.t);r('Evidence',s.e);r('Rule',s.r);r('Drafted fix',s.x);if(s.n){r('Not checked',s.n);}
+ box.appendChild(g);
+ box.appendChild(E('p','fine',D.rev));
+}
+function passport(){
+ var g=E('div','sample');
+ function r(a,b){g.appendChild(E('b',null,a));g.appendChild(E('span',null,b));}
+ r('Trade Passport','Issued simultaneously to the importer and the exporter once the importer confirms Approve in CORE™.');
+ r('IOTA Hash Anchor','Complete audit trail of SHA-256 hashes (initial, chased, and updated documents) anchored on IOTA via TWIN (e.g., 8f4a2c91...e307).');
+ r('Data Privacy','Commercial documents remain off-chain inside CORE™ and Signal; only the cryptographic hash is anchored on IOTA.');
+ r('Port Verification','Shared via Information Sharing Network and Destin8; border staff verify record integrity by QR code.');
+ r('Importer Audit Copy','The signed digital Trade Passport—linked to the immutable IOTA hash trail—is delivered back to the importer for internal compliance and regulatory audits.');
+ box.appendChild(g);
+}
+function renderStep(){
+ var s=D.steps[st.step-1];
+ head('Step '+st.step+' of 4: '+s.t,s.p);
+ if(st.step===1||st.step===2){box.appendChild(list(s.items));}
+ else if(st.step===3){
+  if(s.items){box.appendChild(list(s.items));}
+  var w=E('div','chips');D.outcomes.forEach(function(o){var d=E('div');d.appendChild(E('span','chip '+o[0],o[1]));d.appendChild(document.createTextNode(o[2]));w.appendChild(d);});
+  box.appendChild(w);
+  sample();
+ }
+ else{passport();}
+}
+function render(){
+ box.innerHTML='';
+ if(st.step>0){renderStep();return;}
+ if(st.key){var i=D.info[st.key];head(i.t,i.p);if(i.items){box.appendChild(list(i.items));}return;}
+ head('Click any box for details','Step through how CORE™ works using the numbered buttons, switch VeriPura CORE™ on or off, or pause the animation.');
+}
+function apply(){
+ svg.querySelectorAll('[data-flows]').forEach(function(el){
+  var f=el.getAttribute('data-flows');
+  if(f===''){el.classList.remove('dim');return;}
+  var s=el.getAttribute('data-steps')||'';
+  var inFlow=st.flow==='all'||f.split(' ').indexOf(st.flow)>=0;
+  var inStep=st.step===0||s.split(' ').indexOf(String(st.step))>=0;
+  var keep=(el.getAttribute('data-keep')||'').split(' ').indexOf(String(st.step))>=0;
+  el.classList.toggle('dim',!(keep||(inFlow&&inStep)));
+ });
+ svg.querySelectorAll('.core-pill').forEach(function(p){p.classList.toggle('pill-active',Number(p.getAttribute('data-active-step'))===st.step);});
+ svg.querySelectorAll('.step-only').forEach(function(el){el.style.display=(Number(el.getAttribute('data-step-only'))===st.step)?'':'none';});
+ document.querySelectorAll('[data-step]').forEach(function(b){b.setAttribute('aria-pressed',Number(b.getAttribute('data-step'))===st.step?'true':'false');});
+ svg.querySelectorAll('.node').forEach(function(n){n.classList.toggle('sel',n===st.nodeEl&&st.step===0);});
+}
+function update(){apply();render();}
+svg.querySelectorAll('.node').forEach(function(n){
+ function pick(){st.key=n.getAttribute('data-info');st.nodeEl=n;st.step=0;update();}
+ n.addEventListener('click',pick);
+ n.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});
+});
+document.querySelectorAll('[data-step]').forEach(function(b){b.addEventListener('click',function(){var n=Number(b.getAttribute('data-step'));st.step=(st.step===n)?0:n;if(st.step>0){st.key=null;st.nodeEl=null;}update();});});
+var core=document.getElementById('core');
+core.addEventListener('change',function(){
+ svg.classList.toggle('core-off',!core.checked);
+ if(!core.checked){if(st.step>=3){st.step=0;}if(st.nodeEl&&st.nodeEl.classList.contains('core-el')){st.key=null;st.nodeEl=null;}}
+ update();
+});
+var an=document.getElementById('anim');
+function setAnim(){svg.classList.toggle('no-anim',!an.checked);}
+an.addEventListener('change',setAnim);
+if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){an.checked=false;}
+setAnim();update();
+})();
+</script>
+</body>
+</html>
