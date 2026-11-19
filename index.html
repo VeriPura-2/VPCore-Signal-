@@ -30,8 +30,9 @@ svg{width:100%;height:auto;display:block}
 .node:focus{outline:none}
 .node:focus-visible .shape{stroke:#12203A;stroke-width:3.5}
 .node.sel .shape{stroke:#12203A;stroke-width:3.5}
-[data-flows]{transition:opacity .2s}
+.node,.edge,.core-pill{transition:opacity .2s}
 .dim{opacity:.13}
+.dot.dim{display:none}
 .core-pill.dim{opacity:.25}
 .core-pill rect{transition:stroke .2s,stroke-width .2s}
 .core-pill.pill-active rect{stroke-width:1.8}
@@ -69,7 +70,7 @@ svg{width:100%;height:auto;display:block}
 .sample span{color:#3B4658}
 .fine{font-size:13px;color:#5A6577;margin-top:8px}
 .controls-wrap{display:flex;flex-direction:column;gap:0}
-.svg-stage{position:relative;width:100%;background:#fff;border-radius:10px;overflow:hidden;touch-action:pan-y}
+.svg-stage{position:relative;width:100%;background:#fff;border-radius:10px;touch-action:pan-y}
 .svg-stage.zoomed{touch-action:none}
 .svg-stage.is-dragging{cursor:grabbing}
 .zoom-hud{position:absolute;right:10px;bottom:10px;display:flex;gap:6px;align-items:center;z-index:10;background:#ffffff;padding:4px;border-radius:999px;border:1.5px solid #C9D1DE;box-shadow:0 2px 8px rgba(18,32,58,.10)}
@@ -295,51 +296,51 @@ svg{width:100%;height:auto;display:block}
 
 
 <!-- Animations for Importer flow (Orange, 50% speed) -->
-<circle class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"><animateMotion dur="4.4s" repeatCount="indefinite"><mpath href="#e-imp-mee" xlink:href="#e-imp-mee"/></animateMotion></circle>
-<circle class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion keyPoints="1;0" keyTimes="0;1" calcMode="linear" dur="4.4s" repeatCount="indefinite"><mpath href="#e-imp-mee" xlink:href="#e-imp-mee"/></animateMotion></circle>
-<circle class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"><animateMotion dur="4.4s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-imp-mee" xlink:href="#e-imp-mee"/></animateMotion></circle>
-<circle class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"><animateMotion dur="8.5s" repeatCount="indefinite"><mpath href="#e-imp-sap" xlink:href="#e-imp-sap"/></animateMotion></circle>
-<circle class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion keyPoints="1;0" keyTimes="0;1" calcMode="linear" dur="8.5s" repeatCount="indefinite"><mpath href="#e-imp-sap" xlink:href="#e-imp-sap"/></animateMotion></circle>
-<circle class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"><animateMotion dur="8.5s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-imp-sap" xlink:href="#e-imp-sap"/></animateMotion></circle>
-<circle class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"><animateMotion dur="19.3s" repeatCount="indefinite"><mpath href="#e-imp-ipl" xlink:href="#e-imp-ipl"/></animateMotion></circle>
-<circle class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion keyPoints="1;0" keyTimes="0;1" calcMode="linear" dur="19.3s" repeatCount="indefinite"><mpath href="#e-imp-ipl" xlink:href="#e-imp-ipl"/></animateMotion></circle>
-<circle class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"><animateMotion dur="19.3s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-imp-ipl" xlink:href="#e-imp-ipl"/></animateMotion></circle>
+<circle id="dot-0" transform="translate(300,229)" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
+<circle id="dot-1" transform="translate(300,275)" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
+<circle id="dot-2" transform="translate(300,275)" class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
+<circle id="dot-3" transform="translate(480,229)" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
+<circle id="dot-4" transform="translate(420,275)" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
+<circle id="dot-5" transform="translate(420,275)" class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
+<circle id="dot-6" transform="translate(660,229)" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
+<circle id="dot-7" transform="translate(465,275)" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
+<circle id="dot-8" transform="translate(465,275)" class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
 
 <!-- Animations for Supplier/Exporter flow (Blue, 50% speed) -->
-<circle class="dot" r="4.6" fill="#3F5FBF" data-flows="p1" data-steps="1 2 3"><animateMotion dur="24.1s" repeatCount="indefinite"><mpath href="#e-sup-p1" xlink:href="#e-sup-p1"/></animateMotion></circle>
-<circle class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p1" data-steps="1 2 3 4"><animateMotion dur="24.1s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-sup-p1" xlink:href="#e-sup-p1"/></animateMotion></circle>
-<circle class="dot" r="4.6" fill="#3F5FBF" data-flows="p2" data-steps="1 2 3"><animateMotion dur="15.4s" repeatCount="indefinite"><mpath href="#e-sup-p2" xlink:href="#e-sup-p2"/></animateMotion></circle>
-<circle class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p2" data-steps="1 2 3 4"><animateMotion dur="15.4s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-sup-p2" xlink:href="#e-sup-p2"/></animateMotion></circle>
-<circle class="dot" r="4.6" fill="#3F5FBF" data-flows="p3" data-steps="1 2 3"><animateMotion dur="17.8s" repeatCount="indefinite"><mpath href="#e-sup-p3" xlink:href="#e-sup-p3"/></animateMotion></circle>
-<circle class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p3" data-steps="1 2 3 4"><animateMotion dur="17.8s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-sup-p3" xlink:href="#e-sup-p3"/></animateMotion></circle>
-<circle class="dot" r="4.6" fill="#3F5FBF" data-flows="p4" data-steps="1 2 3"><animateMotion dur="25.8s" repeatCount="indefinite"><mpath href="#e-sup-p4" xlink:href="#e-sup-p4"/></animateMotion></circle>
-<circle class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p4" data-steps="1 2 3 4"><animateMotion dur="25.8s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-sup-p4" xlink:href="#e-sup-p4"/></animateMotion></circle>
-<circle class="dot" r="4.6" fill="#3F5FBF" data-flows="p5" data-steps="1 2 3"><animateMotion dur="34.2s" repeatCount="indefinite"><mpath href="#e-sup-p5" xlink:href="#e-sup-p5"/></animateMotion></circle>
-<circle class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p5" data-steps="1 2 3 4"><animateMotion dur="34.2s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-sup-p5" xlink:href="#e-sup-p5"/></animateMotion></circle>
+<circle id="dot-9" transform="translate(119,560)" class="dot" r="4.6" fill="#3F5FBF" data-flows="p1" data-steps="1 2 3"/>
+<circle id="dot-10" transform="translate(265,405)" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p1" data-steps="1 2 3 4"/>
+<circle id="dot-11" transform="translate(268,560)" class="dot" r="4.6" fill="#3F5FBF" data-flows="p2" data-steps="1 2 3"/>
+<circle id="dot-12" transform="translate(305,405)" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p2" data-steps="1 2 3 4"/>
+<circle id="dot-13" transform="translate(412,560)" class="dot" r="4.6" fill="#3F5FBF" data-flows="p3" data-steps="1 2 3"/>
+<circle id="dot-14" transform="translate(345,405)" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p3" data-steps="1 2 3 4"/>
+<circle id="dot-15" transform="translate(552,560)" class="dot" r="4.6" fill="#3F5FBF" data-flows="p4" data-steps="1 2 3"/>
+<circle id="dot-16" transform="translate(385,405)" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p4" data-steps="1 2 3 4"/>
+<circle id="dot-17" transform="translate(698,560)" class="dot" r="4.6" fill="#3F5FBF" data-flows="p5" data-steps="1 2 3"/>
+<circle id="dot-18" transform="translate(425,405)" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p5" data-steps="1 2 3 4"/>
 <!-- Internal Flow (Purple, 50% speed) -->
-<circle class="dot" r="4.6" fill="#7A3E9D" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"><animateMotion dur="4.0s" repeatCount="indefinite"><mpath href="#e-core-sig" xlink:href="#e-core-sig"/></animateMotion></circle>
-<circle class="dot bi-dot" r="4.6" fill="#7A3E9D" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"><animateMotion dur="4.0s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-core-sig" xlink:href="#e-core-sig"/></animateMotion></circle>
+<circle id="dot-19" transform="translate(495,346)" class="dot" r="4.6" fill="#7A3E9D" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"/>
+<circle id="dot-20" transform="translate(535,346)" class="dot bi-dot" r="4.6" fill="#7A3E9D" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"/>
 
 <!-- Animations for Data Sources flow (Teal, 50% speed) -->
-<circle class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="3"><animateMotion dur="3.0s" repeatCount="indefinite"><mpath href="#e-ds-val" xlink:href="#e-ds-val"/></animateMotion></circle>
-<circle class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="3"><animateMotion dur="3.0s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-ds-val" xlink:href="#e-ds-val"/></animateMotion></circle>
-<circle class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="2"><animateMotion dur="3.4s" repeatCount="indefinite"><mpath href="#e-ds-lab" xlink:href="#e-ds-lab"/></animateMotion></circle>
-<circle class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="2"><animateMotion dur="3.4s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-ds-lab" xlink:href="#e-ds-lab"/></animateMotion></circle>
-<circle class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2"><animateMotion dur="3.8s" repeatCount="indefinite"><mpath href="#e-ds-gov" xlink:href="#e-ds-gov"/></animateMotion></circle>
-<circle class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2"><animateMotion dur="3.8s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-ds-gov" xlink:href="#e-ds-gov"/></animateMotion></circle>
+<circle id="dot-21" transform="translate(208,289)" class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="3"/>
+<circle id="dot-22" transform="translate(250,289)" class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="3"/>
+<circle id="dot-23" transform="translate(208,344)" class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="2"/>
+<circle id="dot-24" transform="translate(250,344)" class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="2"/>
+<circle id="dot-25" transform="translate(208,399)" class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2"/>
+<circle id="dot-26" transform="translate(250,399)" class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2"/>
 
 <!-- Animations for Two-Way Hash & IOTA Authentication + Downstream (Teal & Green, 50% speed) -->
-<circle class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4"><animateMotion dur="4.0s" repeatCount="indefinite"><mpath href="#e-core-twin" xlink:href="#e-core-twin"/></animateMotion></circle>
-<circle class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4"><animateMotion dur="4.0s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-core-twin" xlink:href="#e-core-twin"/></animateMotion></circle>
-<circle class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"><animateMotion dur="5.0s" repeatCount="indefinite"><mpath href="#e-sig-twin" xlink:href="#e-sig-twin"/></animateMotion></circle>
-<circle class="dot bi-dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"><animateMotion dur="5.0s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-sig-twin" xlink:href="#e-sig-twin"/></animateMotion></circle>
+<circle id="dot-27" transform="translate(466,405)" class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4"/>
+<circle id="dot-28" transform="translate(466,438)" class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4"/>
+<circle id="dot-29" transform="translate(700,405)" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"/>
+<circle id="dot-30" transform="translate(700,438)" class="dot bi-dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"/>
 
-<circle class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion dur="8.0s" repeatCount="indefinite"><mpath href="#e-twin-isn" xlink:href="#e-twin-isn"/></animateMotion></circle>
-<circle class="dot bi-dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion dur="8.0s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#e-twin-isn" xlink:href="#e-twin-isn"/></animateMotion></circle>
+<circle id="dot-31" transform="translate(760,468)" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
+<circle id="dot-32" transform="translate(905,340)" class="dot bi-dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
 
-<circle class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2" data-steps="4"><animateMotion dur="5.0s" repeatCount="indefinite"><mpath href="#e-twin-mcp" xlink:href="#e-twin-mcp"/></animateMotion></circle>
-<circle class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion dur="7.0s" repeatCount="indefinite"><mpath href="#e-isn-ash" xlink:href="#e-isn-ash"/></animateMotion></circle>
-<circle class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"><animateMotion dur="8.0s" repeatCount="indefinite"><mpath href="#e-isn-suf" xlink:href="#e-isn-suf"/></animateMotion></circle>
+<circle id="dot-33" transform="translate(760,484)" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2" data-steps="4"/>
+<circle id="dot-34" transform="translate(1075,340)" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
+<circle id="dot-35" transform="translate(1075,340)" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
 
 <!-- Legend Updates -->
 <line x1="48" y1="718" x2="82" y2="718" stroke="#E8862A" stroke-width="2.6" stroke-linecap="round"/>
@@ -686,17 +687,54 @@ core.addEventListener('change',function(){
  update();
  animateVB(getDefaultVB(),false);
 });
+var PATH_DATA={"e-core-sig":{"len":40.0,"segs":[[495.0,346.0,535.0,346.0,0.0,40.0]]},"e-imp-mee":{"len":46.0,"segs":[[300.0,229.0,300.0,275.0,0.0,46.0]]},"e-imp-sap":{"len":106.0,"segs":[[480.0,229.0,480.0,240.0,0.0,11.0],[480.0,240.0,420.0,240.0,11.0,60.0],[420.0,240.0,420.0,275.0,71.0,35.0]]},"e-imp-ipl":{"len":241.0,"segs":[[660.0,229.0,660.0,255.0,0.0,26.0],[660.0,255.0,465.0,255.0,26.0,195.0],[465.0,255.0,465.0,275.0,221.0,20.0]]},"e-sup-p1":{"len":301.0,"segs":[[119.0,560.0,119.0,518.0,0.0,42.0],[119.0,518.0,265.0,518.0,42.0,146.0],[265.0,518.0,265.0,405.0,188.0,113.0]]},"e-sup-p2":{"len":192.0,"segs":[[268.0,560.0,268.0,536.0,0.0,24.0],[268.0,536.0,305.0,536.0,24.0,37.0],[305.0,536.0,305.0,405.0,61.0,131.0]]},"e-sup-p3":{"len":222.0,"segs":[[412.0,560.0,412.0,542.0,0.0,18.0],[412.0,542.0,345.0,542.0,18.0,67.0],[345.0,542.0,345.0,405.0,85.0,137.0]]},"e-sup-p4":{"len":322.0,"segs":[[552.0,560.0,552.0,530.0,0.0,30.0],[552.0,530.0,385.0,530.0,30.0,167.0],[385.0,530.0,385.0,405.0,197.0,125.0]]},"e-sup-p5":{"len":428.0,"segs":[[698.0,560.0,698.0,518.0,0.0,42.0],[698.0,518.0,425.0,518.0,42.0,273.0],[425.0,518.0,425.0,405.0,315.0,113.0]]},"e-ds-val":{"len":42.0,"segs":[[208.0,289.0,250.0,289.0,0.0,42.0]]},"e-ds-lab":{"len":42.0,"segs":[[208.0,344.0,250.0,344.0,0.0,42.0]]},"e-ds-gov":{"len":42.0,"segs":[[208.0,399.0,250.0,399.0,0.0,42.0]]},"e-core-twin":{"len":33.0,"segs":[[466.0,405.0,466.0,438.0,0.0,33.0]]},"e-sig-twin":{"len":33.0,"segs":[[700.0,405.0,700.0,438.0,0.0,33.0]]},"e-twin-isn":{"len":273.0,"segs":[[760.0,468.0,850.0,468.0,0.0,90.0],[850.0,468.0,850.0,340.0,90.0,128.0],[850.0,340.0,905.0,340.0,218.0,55.0]]},"e-twin-mcp":{"len":155.0,"segs":[[760.0,484.0,915.0,484.0,0.0,155.0]]},"e-isn-ash":{"len":163.0,"segs":[[1075.0,340.0,1090.0,340.0,0.0,15.0],[1090.0,340.0,1090.0,220.0,15.0,120.0],[1090.0,220.0,1118.0,220.0,135.0,28.0]]},"e-isn-suf":{"len":223.0,"segs":[[1075.0,340.0,1090.0,340.0,0.0,15.0],[1090.0,340.0,1090.0,520.0,15.0,180.0],[1090.0,520.0,1118.0,520.0,195.0,28.0]]}};
+var DOT_LIST=[["dot-0","e-imp-mee",4.4,0],["dot-1","e-imp-mee",4.4,1],["dot-2","e-imp-mee",4.4,1],["dot-3","e-imp-sap",8.5,0],["dot-4","e-imp-sap",8.5,1],["dot-5","e-imp-sap",8.5,1],["dot-6","e-imp-ipl",19.3,0],["dot-7","e-imp-ipl",19.3,1],["dot-8","e-imp-ipl",19.3,1],["dot-9","e-sup-p1",24.1,0],["dot-10","e-sup-p1",24.1,1],["dot-11","e-sup-p2",15.4,0],["dot-12","e-sup-p2",15.4,1],["dot-13","e-sup-p3",17.8,0],["dot-14","e-sup-p3",17.8,1],["dot-15","e-sup-p4",25.8,0],["dot-16","e-sup-p4",25.8,1],["dot-17","e-sup-p5",34.2,0],["dot-18","e-sup-p5",34.2,1],["dot-19","e-core-sig",4.0,0],["dot-20","e-core-sig",4.0,1],["dot-21","e-ds-val",3.0,0],["dot-22","e-ds-val",3.0,1],["dot-23","e-ds-lab",3.4,0],["dot-24","e-ds-lab",3.4,1],["dot-25","e-ds-gov",3.8,0],["dot-26","e-ds-gov",3.8,1],["dot-27","e-core-twin",4.0,0],["dot-28","e-core-twin",4.0,1],["dot-29","e-sig-twin",5.0,0],["dot-30","e-sig-twin",5.0,1],["dot-31","e-twin-isn",8.0,0],["dot-32","e-twin-isn",8.0,1],["dot-33","e-twin-mcp",5.0,0],["dot-34","e-isn-ash",7.0,0],["dot-35","e-isn-suf",8.0,0]].map(function(item){
+ return {el:document.getElementById(item[0]),p:PATH_DATA[item[1]],dur:item[2]*1000,rev:item[3]};
+});
+function ptAt(p,t){
+ var dist=t*p.len,segs=p.segs;
+ for(var i=0;i<segs.length;i++){
+  var s=segs[i];
+  if(dist<=s[4]+s[5]||i===segs.length-1){
+   var f=s[5]>0?Math.max(0,Math.min(1,(dist-s[4])/s[5])):0;
+   return [s[0]+(s[2]-s[0])*f,s[1]+(s[3]-s[1])*f];
+  }
+ }
+ return [segs[0][0],segs[0][1]];
+}
 var an=document.getElementById('anim');
-function syncSvgSmil(){
+var dotRaf=null,dotStart=performance.now(),lastFrame=0;
+function stepDots(now){
+ if(!an.checked||document.hidden){dotRaf=null;return;}
+ if(now-lastFrame>=32){
+  lastFrame=now;
+  var elapsed=now-dotStart;
+  var coreOff=svg.classList.contains('core-off');
+  for(var i=0;i<DOT_LIST.length;i++){
+   var d=DOT_LIST[i],el=d.el;
+   if(!el||el.classList.contains('dim'))continue;
+   if(coreOff&&(el.classList.contains('core-el')||el.classList.contains('bi-dot')))continue;
+   var t=(elapsed%d.dur)/d.dur;
+   if(d.rev)t=1-t;
+   var xy=ptAt(d.p,t);
+   el.setAttribute('transform','translate('+xy[0].toFixed(1)+','+xy[1].toFixed(1)+')');
+  }
+ }
+ dotRaf=requestAnimationFrame(stepDots);
+}
+function syncDots(){
  var shouldRun=an.checked&&!document.hidden;
- try{
-  if(shouldRun&&svg.unpauseAnimations){svg.unpauseAnimations();}
-  else if(!shouldRun&&svg.pauseAnimations){svg.pauseAnimations();}
- }catch(err){}
+ if(shouldRun&&!dotRaf){
+  lastFrame=0;
+  dotRaf=requestAnimationFrame(stepDots);
+ }else if(!shouldRun&&dotRaf){
+  cancelAnimationFrame(dotRaf);
+  dotRaf=null;
+ }
 }
 function setAnim(){
  svg.classList.toggle('no-anim',!an.checked);
- syncSvgSmil();
+ syncDots();
 }
 an.addEventListener('change',setAnim);
 if(reduceMotion){an.checked=false;}
@@ -707,18 +745,14 @@ if(mqMobile.addEventListener){
  window.addEventListener('resize',function(){syncViewportMode(true);});
 }
 document.addEventListener('visibilitychange',function(){
- syncSvgSmil();
- if(!document.hidden){
-  syncViewportMode(true);
-  stage.style.transform='translateZ(0)';
-  requestAnimationFrame(function(){stage.style.transform='';});
- }
+ syncDots();
+ if(!document.hidden){syncViewportMode(true);}
 });
 window.addEventListener('pageshow',function(){
- syncSvgSmil();
+ syncDots();
  syncViewportMode(true);
 });
-setAnim();update();syncViewportMode(true);
+update();syncViewportMode(true);setAnim();
 })();
 </script>
 </body>
