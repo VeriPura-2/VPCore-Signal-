@@ -380,4 +380,248 @@ var D={"info": {
  "p2": {"c": [6, 1, 1], "t": "Approval expires before arrival", "e": "Establishment approval expires in 6 days. Planned arrival is in 9 days.", "r": "Documents must be valid on arrival. Alert threshold: 7 days.", "x": "Request a renewed approval before dispatch.", "n": "Cold-chain sensor check (in development)."},
  "p3": {"c": [9, 1, 0], "t": "Missing health certificate", "e": "Veterinary health certificate is missing from the submitted bundle.", "r": "Beef exports require a valid veterinary certificate.", "x": "Request the exporter to upload the missing certificate.", "n": ""},
  "p4": {"c": [8, 1, 1], "t": "Lab sample does not match the container", "e": "Lab report names container ABCU 123456 7. Bill of lading shows ABCU 123465 7.", "r": "The lab sample must match the container shipped.", "x": "Ask the lab to confirm the container and reissue the report.", "n": "One lab parameter was missing from the report."},
- "p5": {"c": [7, 1, 0], "t": "Certificate number differs", "e
+ "p5": {"c": [7, 1, 0], "t": "Certificate number differs", "e": "Phytosanitary certificate: NL-PH-48213. Commercial invoice: NL-PH-48231.", "r": "Certificate numbers must agree across documents.", "x": "Ask the exporter to correct the invoice reference.", "n": ""}
+},
+"rev": "Importer decides what happens next. CORE™ never approves or clears a shipment."};
+
+var svg=document.getElementById('d'),box=document.getElementById('info');
+var st={flow:'all',step:0,key:null,nodeEl:null};
+function E(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
+function list(arr){var ul=E('ul');arr.forEach(function(i){var li=E('li');li.appendChild(document.createTextNode(i[0]));if(i[1]){li.appendChild(E('span','badge '+(i[1]==='dev'?'dev':'avail'),i[1]==='dev'?'In development':'Available'));}ul.appendChild(li);});return ul;}
+function head(t,p){box.appendChild(E('h2',null,t));if(p)box.appendChild(E('p',null,p));}
+function sample(){
+ var k=st.flow==='all'?'p3':st.flow,s=D.samples[k];
+ box.appendChild(E('p','fine','Illustrative example findings shared with the importer for confirmation (not a real consignment).'));
+ var row=E('div');
+ [['m','Matched',s.c[0]],['f','Flagged',s.c[1]],['n','Not checked',s.c[2]]].forEach(function(x){row.appendChild(E('span','chip '+x[0],x[1]+' '+x[2]));});
+ box.appendChild(row);
+ var g=E('div','sample');
+ function r(a,b){g.appendChild(E('b',null,a));g.appendChild(E('span',null,b));}
+ r('Flagged',s.t);r('Evidence',s.e);r('Rule',s.r);r('Drafted fix',s.x);if(s.n){r('Not checked',s.n);}
+ box.appendChild(g);
+ box.appendChild(E('p','fine',D.rev));
+}
+function passport(){
+ var g=E('div','sample');
+ function r(a,b){g.appendChild(E('b',null,a));g.appendChild(E('span',null,b));}
+ r('Trade Passport','Issued simultaneously to the importer and the exporter once the importer confirms Approve in CORE™.');
+ r('IOTA Hash Anchor','Complete audit trail of SHA-256 hashes (initial, chased, and updated documents) anchored on IOTA via TWIN (e.g., 8f4a2c91...e307).');
+ r('Data Privacy','Commercial documents remain off-chain inside CORE™ and Signal; only the cryptographic hash is anchored on IOTA.');
+ r('Port Verification','Shared via Information Sharing Network and Destin8; border staff verify record integrity by QR code.');
+ r('Importer Audit Copy','The signed digital Trade Passport—linked to the immutable IOTA hash trail—is delivered back to the importer for internal compliance and regulatory audits.');
+ box.appendChild(g);
+}
+function renderStep(){
+ var s=D.steps[st.step-1];
+ head('Step '+st.step+' of 4: '+s.t,s.p);
+ if(st.step===1||st.step===2){box.appendChild(list(s.items));}
+ else if(st.step===3){
+  if(s.items){box.appendChild(list(s.items));}
+  var w=E('div','chips');D.outcomes.forEach(function(o){var d=E('div');d.appendChild(E('span','chip '+o[0],o[1]));d.appendChild(document.createTextNode(o[2]));w.appendChild(d);});
+  box.appendChild(w);
+  sample();
+ }
+ else{passport();}
+}
+function render(){
+ box.innerHTML='';
+ if(st.step>0){renderStep();return;}
+ if(st.key){var i=D.info[st.key];head(i.t,i.p);if(i.items){box.appendChild(list(i.items));}return;}
+ head('Click any box for details','Step through how CORE™ works using the numbered buttons, switch VeriPura CORE™ on or off, or pause the animation.');
+}
+function apply(){
+ svg.querySelectorAll('[data-flows]').forEach(function(el){
+  var f=el.getAttribute('data-flows');
+  if(f===''){el.classList.remove('dim');return;}
+  var s=el.getAttribute('data-steps')||'';
+  var inFlow=st.flow==='all'||f.split(' ').indexOf(st.flow)>=0;
+  var inStep=st.step===0||s.split(' ').indexOf(String(st.step))>=0;
+  var keep=(el.getAttribute('data-keep')||'').split(' ').indexOf(String(st.step))>=0;
+  el.classList.toggle('dim',!(keep||(inFlow&&inStep)));
+ });
+ svg.querySelectorAll('.core-pill').forEach(function(p){p.classList.toggle('pill-active',Number(p.getAttribute('data-active-step'))===st.step);});
+ svg.querySelectorAll('.step-only').forEach(function(el){el.style.display=(Number(el.getAttribute('data-step-only'))===st.step)?'':'none';});
+ document.querySelectorAll('[data-step]').forEach(function(b){b.setAttribute('aria-pressed',Number(b.getAttribute('data-step'))===st.step?'true':'false');});
+ svg.querySelectorAll('.node').forEach(function(n){n.classList.toggle('sel',n===st.nodeEl&&st.step===0);});
+}
+function update(){apply();render();}
+svg.querySelectorAll('.node').forEach(function(n){
+ function pick(){st.key=n.getAttribute('data-info');st.nodeEl=n;st.step=0;update();}
+ n.addEventListener('click',pick);
+ n.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});
+});
+var stage=document.getElementById('stage');
+var FULL_VB={x:0,y:0,w:1280,h:820};
+var PORTRAIT_STEP_VB={
+ 0:{x:0,y:0,w:1280,h:820},
+ 1:{x:28,y:128,w:764,h:554},
+ 2:{x:28,y:128,w:764,h:554},
+ 3:{x:28,y:128,w:764,h:554},
+ 4:{x:32,y:132,w:1224,h:550}
+};
+var curVB={x:0,y:0,w:1280,h:820};
+var animRaf=null;
+var mqPortrait=window.matchMedia?window.matchMedia('(max-width: 900px) and (orientation: portrait)'):{matches:false};
+var reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function setVB(vb){
+ curVB={x:vb.x,y:vb.y,w:vb.w,h:vb.h};
+ svg.setAttribute('viewBox',curVB.x.toFixed(1)+' '+curVB.y.toFixed(1)+' '+curVB.w.toFixed(1)+' '+curVB.h.toFixed(1));
+ stage.classList.toggle('zoomed',curVB.w<1275||curVB.h<815);
+}
+function animateVB(target,instant){
+ if(animRaf){cancelAnimationFrame(animRaf);animRaf=null;}
+ if(instant||reduceMotion){setVB(target);return;}
+ var start={x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h};
+ var t0=performance.now(),dur=280;
+ function tick(now){
+  var p=Math.min(1,(now-t0)/dur);
+  var e=1-Math.pow(1-p,3);
+  setVB({
+   x:start.x+(target.x-start.x)*e,
+   y:start.y+(target.y-start.y)*e,
+   w:start.w+(target.w-start.w)*e,
+   h:start.h+(target.h-start.h)*e
+  });
+  if(p<1){animRaf=requestAnimationFrame(tick);}else{animRaf=null;}
+ }
+ animRaf=requestAnimationFrame(tick);
+}
+function getDefaultVB(){
+ var isPort=mqPortrait.matches||(window.innerWidth<=900&&window.innerHeight>window.innerWidth);
+ if(isPort){
+  return PORTRAIT_STEP_VB[st.step]||FULL_VB;
+ }
+ return FULL_VB;
+}
+function clampVB(vb){
+ var w=Math.max(420,Math.min(1280,vb.w));
+ var h=w*(820/1280);
+ var x=Math.max(-30,Math.min(1280-w+30,vb.x));
+ var y=Math.max(-20,Math.min(820-h+20,vb.y));
+ return {x:x,y:y,w:w,h:h};
+}
+function zoomBy(factor){
+ var nw=curVB.w*factor,nh=curVB.h*factor;
+ animateVB(clampVB({x:curVB.x+(curVB.w-nw)*0.5,y:curVB.y+(curVB.h-nh)*0.5,w:nw,h:nh}),false);
+}
+
+document.getElementById('z-in').addEventListener('click',function(){zoomBy(0.75);});
+document.getElementById('z-out').addEventListener('click',function(){zoomBy(1.333);});
+document.getElementById('z-fit').addEventListener('click',function(){animateVB(getDefaultVB(),false);});
+
+var ptrs=new Map(),gesture=null,suppressClick=false;
+stage.addEventListener('pointerdown',function(e){
+ ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(ptrs.size===1&&stage.classList.contains('zoomed')){
+  gesture={type:'pan',startX:e.clientX,startY:e.clientY,startVB:{x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h},moved:false};
+ }else if(ptrs.size===2){
+  var pts=Array.from(ptrs.values());
+  var dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y)||1;
+  var midX=(pts[0].x+pts[1].x)/2,midY=(pts[0].y+pts[1].y)/2;
+  gesture={type:'pinch',startDist:dist,midX:midX,midY:midY,startVB:{x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h}};
+  suppressClick=true;
+ }
+});
+stage.addEventListener('pointermove',function(e){
+ if(!ptrs.has(e.pointerId)||!gesture)return;
+ ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ var rect=stage.getBoundingClientRect();
+ if(!rect.width||!rect.height)return;
+ if(gesture.type==='pan'&&ptrs.size===1){
+  var dx=e.clientX-gesture.startX,dy=e.clientY-gesture.startY;
+  if(!gesture.moved&&Math.hypot(dx,dy)<6)return;
+  if(!gesture.moved){gesture.moved=true;suppressClick=true;stage.classList.add('is-dragging');if(animRaf){cancelAnimationFrame(animRaf);animRaf=null;}}
+  var sc=Math.max(gesture.startVB.w/rect.width,gesture.startVB.h/rect.height);
+  setVB(clampVB({x:gesture.startVB.x-dx*sc,y:gesture.startVB.y-dy*sc,w:gesture.startVB.w,h:gesture.startVB.h}));
+ }else if(gesture.type==='pinch'&&ptrs.size===2){
+  if(animRaf){cancelAnimationFrame(animRaf);animRaf=null;}
+  var pts=Array.from(ptrs.values());
+  var dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y)||1;
+  var ratio=gesture.startDist/dist;
+  var midX=(pts[0].x+pts[1].x)/2,midY=(pts[0].y+pts[1].y)/2;
+  var rx=Math.max(0,Math.min(1,(midX-rect.left)/rect.width));
+  var ry=Math.max(0,Math.min(1,(midY-rect.top)/rect.height));
+  var nw=gesture.startVB.w*ratio,nh=gesture.startVB.h*ratio;
+  var panDx=(midX-gesture.midX)*(gesture.startVB.w/rect.width);
+  var panDy=(midY-gesture.midY)*(gesture.startVB.h/rect.height);
+  setVB(clampVB({x:gesture.startVB.x+(gesture.startVB.w-nw)*rx-panDx,y:gesture.startVB.y+(gesture.startVB.h-nh)*ry-panDy,w:nw,h:nh}));
+ }
+});
+function resetPointers(){ptrs.clear();gesture=null;stage.classList.remove('is-dragging');setTimeout(function(){suppressClick=false;},40);}
+function endPointer(e){ptrs.delete(e.pointerId);if(e.type==='pointercancel'||ptrs.size===0)resetPointers();}
+stage.addEventListener('pointerup',endPointer);
+stage.addEventListener('pointercancel',endPointer);
+window.addEventListener('blur',resetPointers);
+stage.addEventListener('click',function(e){if(suppressClick){e.stopPropagation();e.preventDefault();}},true);
+
+document.querySelectorAll('[data-step]').forEach(function(b){
+ b.addEventListener('click',function(){
+  var n=Number(b.getAttribute('data-step'));
+  st.step=(st.step===n)?0:n;
+  if(st.step>0){st.key=null;st.nodeEl=null;}
+  update();
+  animateVB(getDefaultVB(),false);
+ });
+});
+var core=document.getElementById('core');
+core.addEventListener('change',function(){
+ svg.classList.toggle('core-off',!core.checked);
+ if(!core.checked){if(st.step>=3){st.step=0;}if(st.nodeEl&&st.nodeEl.classList.contains('core-el')){st.key=null;st.nodeEl=null;}}
+ update();
+ animateVB(getDefaultVB(),false);
+});
+
+var PATH_DATA={"e-core-sig":{"len":40.0,"segs":[[495.0,346.0,535.0,346.0,0.0,40.0]]},"e-imp-mee":{"len":46.0,"segs":[[300.0,229.0,300.0,275.0,0.0,46.0]]},"e-imp-sap":{"len":106.0,"segs":[[480.0,229.0,480.0,240.0,0.0,11.0],[480.0,240.0,420.0,240.0,11.0,60.0],[420.0,240.0,420.0,275.0,71.0,35.0]]},"e-imp-ipl":{"len":241.0,"segs":[[660.0,229.0,660.0,255.0,0.0,26.0],[660.0,255.0,465.0,255.0,26.0,195.0],[465.0,255.0,465.0,275.0,221.0,20.0]]},"e-sup-p1":{"len":301.0,"segs":[[119.0,560.0,119.0,518.0,0.0,42.0],[119.0,518.0,265.0,518.0,42.0,146.0],[265.0,518.0,265.0,405.0,188.0,113.0]]},"e-sup-p2":{"len":192.0,"segs":[[268.0,560.0,268.0,536.0,0.0,24.0],[268.0,536.0,305.0,536.0,24.0,37.0],[305.0,536.0,305.0,405.0,61.0,131.0]]},"e-sup-p3":{"len":222.0,"segs":[[412.0,560.0,412.0,542.0,0.0,18.0],[412.0,542.0,345.0,542.0,18.0,67.0],[345.0,542.0,345.0,405.0,85.0,137.0]]},"e-sup-p4":{"len":322.0,"segs":[[552.0,560.0,552.0,530.0,0.0,30.0],[552.0,530.0,385.0,530.0,30.0,167.0],[385.0,530.0,385.0,405.0,197.0,125.0]]},"e-sup-p5":{"len":428.0,"segs":[[698.0,560.0,698.0,518.0,0.0,42.0],[698.0,518.0,425.0,518.0,42.0,273.0],[425.0,518.0,425.0,405.0,315.0,113.0]]},"e-ds-val":{"len":42.0,"segs":[[208.0,289.0,250.0,289.0,0.0,42.0]]},"e-ds-lab":{"len":42.0,"segs":[[208.0,344.0,250.0,344.0,0.0,42.0]]},"e-ds-gov":{"len":42.0,"segs":[[208.0,399.0,250.0,399.0,0.0,42.0]]},"e-core-twin":{"len":33.0,"segs":[[466.0,405.0,466.0,438.0,0.0,33.0]]},"e-sig-twin":{"len":33.0,"segs":[[700.0,405.0,700.0,438.0,0.0,33.0]]},"e-twin-isn":{"len":273.0,"segs":[[760.0,468.0,850.0,468.0,0.0,90.0],[850.0,468.0,850.0,340.0,90.0,128.0],[850.0,340.0,905.0,340.0,218.0,55.0]]},"e-twin-mcp":{"len":155.0,"segs":[[760.0,484.0,915.0,484.0,0.0,155.0]]},"e-isn-ash":{"len":163.0,"segs":[[1075.0,340.0,1090.0,340.0,0.0,15.0],[1090.0,340.0,1090.0,220.0,15.0,120.0],[1090.0,220.0,1118.0,220.0,135.0,28.0]]},"e-isn-suf":{"len":223.0,"segs":[[1075.0,340.0,1090.0,340.0,0.0,15.0],[1090.0,340.0,1090.0,520.0,15.0,180.0],[1090.0,520.0,1118.0,520.0,195.0,28.0]]}};
+var DOT_LIST=[["dot-0","e-imp-mee",4.4,0],["dot-1","e-imp-mee",4.4,1],["dot-2","e-imp-mee",4.4,1],["dot-3","e-imp-sap",8.5,0],["dot-4","e-imp-sap",8.5,1],["dot-5","e-imp-sap",8.5,1],["dot-6","e-imp-ipl",19.3,0],["dot-7","e-imp-ipl",19.3,1],["dot-8","e-imp-ipl",19.3,1],["dot-9","e-sup-p1",24.1,0],["dot-10","e-sup-p1",24.1,1],["dot-11","e-sup-p2",15.4,0],["dot-12","e-sup-p2",15.4,1],["dot-13","e-sup-p3",17.8,0],["dot-14","e-sup-p3",17.8,1],["dot-15","e-sup-p4",25.8,0],["dot-16","e-sup-p4",25.8,1],["dot-17","e-sup-p5",34.2,0],["dot-18","e-sup-p5",34.2,1],["dot-19","e-core-sig",4.0,0],["dot-20","e-core-sig",4.0,1],["dot-21","e-ds-val",3.0,0],["dot-22","e-ds-val",3.0,1],["dot-23","e-ds-lab",3.4,0],["dot-24","e-ds-lab",3.4,1],["dot-25","e-ds-gov",3.8,0],["dot-26","e-ds-gov",3.8,1],["dot-27","e-core-twin",4.0,0],["dot-28","e-core-twin",4.0,1],["dot-29","e-sig-twin",5.0,0],["dot-30","e-sig-twin",5.0,1],["dot-31","e-twin-isn",8.0,0],["dot-32","e-twin-isn",8.0,1],["dot-33","e-twin-mcp",5.0,0],["dot-34","e-isn-ash",7.0,0],["dot-35","e-isn-suf",8.0,0]].map(function(item){
+ return {el:document.getElementById(item[0]),p:PATH_DATA[item[1]],dur:item[2]*1000,rev:item[3]};
+});
+function ptAt(p,t){
+ var dist=t*p.len,segs=p.segs;
+ for(var i=0;i<segs.length;i++){
+  var s=segs[i];
+  if(dist<=s[4]+s[5]||i===segs.length-1){
+   var f=s[5]>0?Math.max(0,Math.min(1,(dist-s[4])/s[5])):0;
+   return [s[0]+(s[2]-s[0])*f,s[1]+(s[3]-s[1])*f];
+  }
+ }
+ return [segs[0][0],segs[0][1]];
+}
+var an=document.getElementById('anim');
+var dotRaf=null,dotStart=performance.now(),lastFrame=0;
+function stepDots(now){
+ if(!an.checked||document.hidden){dotRaf=null;return;}
+ if(now-lastFrame>=45){
+  lastFrame=now;
+  var elapsed=now-dotStart;
+  var coreOff=svg.classList.contains('core-off');
+  for(var i=0;i<DOT_LIST.length;i++){
+   var d=DOT_LIST[i],el=d.el;
+   if(!el||el.classList.contains('dim'))continue;
+   if(coreOff&&(el.classList.contains('core-el')||el.classList.contains('bi-dot')))continue;
+   var t=(elapsed%d.dur)/d.dur;
+   if(d.rev)t=1-t;
+   var xy=ptAt(d.p,t);
+   el.setAttribute('cx',xy[0].toFixed(1));
+   el.setAttribute('cy',xy[1].toFixed(1));
+  }
+ }
+ dotRaf=requestAnimationFrame(stepDots);
+}
+function syncDots(){
+ var shouldRun=an.checked&&!document.hidden;
+ if(shouldRun&&!dotRaf){lastFrame=0;dotRaf=requestAnimationFrame(stepDots);}
+ else if(!shouldRun&&dotRaf){cancelAnimationFrame(dotRaf);dotRaf=null;}
+}
+function setAnim(){svg.classList.toggle('no-anim',!an.checked);syncDots();}
+an.addEventListener('change',setAnim);
+if(reduceMotion){an.checked=false;}
+if(mqPortrait.addEventListener){mqPortrait.addEventListener('change',function(){animateVB(getDefaultVB(),true);});}
+else{window.addEventListener('resize',function(){animateVB(getDefaultVB(),true);});}
+document.addEventListener('visibilitychange',function(){syncDots();if(!document.hidden)animateVB(getDefaultVB(),true);});
+window.addEventListener('pageshow',function(){syncDots();animateVB(getDefaultVB(),true);});
+update();animateVB(getDefaultVB(),true);setAnim();
+})();
+</script>
+</body>
+</html>
