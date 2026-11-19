@@ -72,7 +72,7 @@ svg{width:100%;height:auto;display:block}
 .svg-stage{position:relative;width:100%;background:#fff;border-radius:10px;overflow:hidden;touch-action:pan-y}
 .svg-stage.zoomed{touch-action:none}
 .svg-stage.is-dragging{cursor:grabbing}
-.zoom-hud{position:absolute;right:10px;bottom:10px;display:flex;gap:6px;align-items:center;z-index:10;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:4px;border-radius:999px;border:1.5px solid #C9D1DE;box-shadow:0 2px 8px rgba(18,32,58,.08)}
+.zoom-hud{position:absolute;right:10px;bottom:10px;display:flex;gap:6px;align-items:center;z-index:10;background:#ffffff;padding:4px;border-radius:999px;border:1.5px solid #C9D1DE;box-shadow:0 2px 8px rgba(18,32,58,.10)}
 .zoom-hud button{-webkit-appearance:none;appearance:none;font:inherit;font-size:13px;font-weight:700;min-width:36px;height:36px;padding:0 10px;border-radius:999px;border:1px solid #C9D1DE;background:#fff;color:#12203A;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1}
 .zoom-hud button:active{background:#12203A;color:#fff}
 .zoom-hud button:focus-visible{outline:3px solid #3F5FBF;outline-offset:2px}
@@ -687,7 +687,17 @@ core.addEventListener('change',function(){
  animateVB(getDefaultVB(),false);
 });
 var an=document.getElementById('anim');
-function setAnim(){svg.classList.toggle('no-anim',!an.checked);}
+function syncSvgSmil(){
+ var shouldRun=an.checked&&!document.hidden;
+ try{
+  if(shouldRun&&svg.unpauseAnimations){svg.unpauseAnimations();}
+  else if(!shouldRun&&svg.pauseAnimations){svg.pauseAnimations();}
+ }catch(err){}
+}
+function setAnim(){
+ svg.classList.toggle('no-anim',!an.checked);
+ syncSvgSmil();
+}
 an.addEventListener('change',setAnim);
 if(reduceMotion){an.checked=false;}
 if(mqMobile.addEventListener){
@@ -696,6 +706,18 @@ if(mqMobile.addEventListener){
 }else{
  window.addEventListener('resize',function(){syncViewportMode(true);});
 }
+document.addEventListener('visibilitychange',function(){
+ syncSvgSmil();
+ if(!document.hidden){
+  syncViewportMode(true);
+  stage.style.transform='translateZ(0)';
+  requestAnimationFrame(function(){stage.style.transform='';});
+ }
+});
+window.addEventListener('pageshow',function(){
+ syncSvgSmil();
+ syncViewportMode(true);
+});
 setAnim();update();syncViewportMode(true);
 })();
 </script>
