@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>UK Trials Data Flows with VeriPura CORE, five steps</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Interactive UK Trials Supply Chain Data Flows with VeriPura CORE™, Signal TMS, TWIN (IOTA), Importers, Exporters, and UK Port Authorities.">
+<title>UK Trials Supply Chain Data Flows with VeriPura CORE™</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
@@ -66,18 +67,71 @@ svg{width:100%;height:auto;display:block}
 .sample b{color:#12203A}
 .sample span{color:#3B4658}
 .fine{font-size:13px;color:#5A6577;margin-top:8px}
+.controls-wrap{display:flex;flex-direction:column;gap:0}
+.svg-stage{position:relative;width:100%;background:#fff;border-radius:10px;overflow:hidden;touch-action:pan-y}
+.svg-stage.zoomed,.svg-stage.is-mobile{touch-action:none}
+.svg-stage.is-dragging{cursor:grabbing}
+.zoom-hud{position:absolute;right:10px;bottom:10px;display:flex;gap:6px;align-items:center;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(4px);padding:4px;border-radius:999px;border:1.5px solid #C9D1DE;box-shadow:0 2px 8px rgba(18,32,58,.08)}
+.zoom-hud button{font:inherit;font-size:13px;font-weight:700;min-width:36px;height:36px;padding:0 10px;border-radius:999px;border:1px solid #C9D1DE;background:#fff;color:#12203A;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.zoom-hud button:active{background:#12203A;color:#fff}
+.zoom-hud button:focus-visible{outline:3px solid #3F5FBF;outline-offset:2px}
+.touch-hint{display:none;position:absolute;left:10px;bottom:12px;font-size:11.5px;font-weight:600;color:#5A6577;background:rgba(246,247,250,.92);padding:4px 10px;border-radius:999px;border:1px solid #D8DFE9;pointer-events:none;z-index:9}
+.main-split{display:block}
+@media (max-width:900px){
+ .wrap{padding:10px max(10px,env(safe-area-inset-right)) 14px max(10px,env(safe-area-inset-left))}
+ .bar{margin:0 0 6px;gap:6px 8px}
+ .bar .grp{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;width:100%;padding-bottom:2px}
+ .bar .grp::-webkit-scrollbar{display:none}
+ .bar .lbl{white-space:nowrap;font-size:12px}
+ .bar button{white-space:nowrap;font-size:13.5px;padding:8px 13px;min-height:40px;flex-shrink:0}
+ .bar label{font-size:13.5px;min-height:38px;white-space:nowrap}
+ .touch-hint{display:block}
+}
+@media (max-width:900px) and (orientation:portrait){
+ .svg-stage{height:46vh;height:clamp(310px,48vh,470px);border:1.5px solid #E2E7F0}
+ .svg-stage svg{width:100%;height:100%}
+ #info{margin-top:8px;padding:12px 14px;min-height:120px}
+ #info h2{font-size:16px}
+ #info p,#info ul,#info .sample{font-size:14px}
+}
+@media (max-width:950px) and (orientation:landscape) and (max-height:540px){
+ .wrap{padding:6px max(10px,env(safe-area-inset-right)) 6px max(10px,env(safe-area-inset-left));max-width:100%}
+ .controls-wrap{flex-direction:row;align-items:center;gap:8px;margin-bottom:6px}
+ .controls-wrap .bar{margin:0;flex-shrink:0}
+ .controls-wrap .bar:last-child{flex:1;min-width:0}
+ .bar label{font-size:12.5px;min-height:34px;padding:0 4px;gap:5px}
+ .bar input{width:17px;height:17px}
+ .bar .lbl{display:none}
+ .bar button{font-size:12.5px;padding:6px 11px;min-height:34px}
+ .main-split{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,1fr);gap:8px;height:calc(100vh - 52px);height:calc(100dvh - 52px);align-items:stretch}
+ .svg-stage{height:100%;border:1.5px solid #E2E7F0}
+ .svg-stage svg{width:100%;height:100%}
+ .zoom-hud{right:6px;bottom:6px;padding:3px;gap:4px}
+ .zoom-hud button{min-width:30px;height:30px;font-size:12px;padding:0 8px}
+ .touch-hint{display:none}
+ #info{margin-top:0;height:100%;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px}
+ #info h2{font-size:15px}
+ #info p,#info ul,#info .sample{font-size:13px;line-height:1.42}
+ #info ul{columns:1;margin-top:6px}
+}
 @media (max-width:760px){#info ul{columns:1}}
 @media (prefers-reduced-motion:reduce){[data-flows]{transition:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
+<div class="controls-wrap">
 <div class="bar" role="toolbar" aria-label="Diagram controls">
 <label><input type="checkbox" id="core" checked><span>VeriPura CORE&trade; on</span></label>
 <label><input type="checkbox" id="anim" checked><span>Animate data</span></label>
 </div>
-<div class="bar"><div class="grp" role="group" aria-label="How CORE works, five steps"><span class="lbl">How CORE&trade; works</span><button type="button" class="step" data-step="0" aria-pressed="true">Full workflow</button><button type="button" class="step" data-step="1" aria-pressed="false">1 Identify the Requirements</button><button type="button" class="step" data-step="2" aria-pressed="false">2 Check and chase</button><button type="button" class="step" data-step="3" aria-pressed="false">3 Confirm and share</button><button type="button" class="step" data-step="4" aria-pressed="false">4 Issue passport</button></div></div>
-<svg id="d" viewBox="0 0 1280 820" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="UK Trials supply chain data flows with VeriPura CORE"><defs>
+<div class="bar"><div class="grp" role="group" aria-label="How CORE works, four steps"><span class="lbl">How CORE&trade; works</span><button type="button" class="step" data-step="0" aria-pressed="true">Full workflow</button><button type="button" class="step" data-step="1" aria-pressed="false">1 Identify the Requirements</button><button type="button" class="step" data-step="2" aria-pressed="false">2 Check and chase</button><button type="button" class="step" data-step="3" aria-pressed="false">3 Confirm and share</button><button type="button" class="step" data-step="4" aria-pressed="false">4 Issue passport</button></div></div>
+</div>
+<div class="main-split">
+<div class="svg-stage" id="stage">
+<div class="touch-hint" aria-hidden="true">Pinch or drag to explore &bull; Tap any box</div>
+<div class="zoom-hud" role="group" aria-label="Diagram zoom controls"><button type="button" id="z-out" aria-label="Zoom out">&minus;</button><button type="button" id="z-fit" aria-label="Fit diagram">Fit</button><button type="button" id="z-in" aria-label="Zoom in">+</button></div>
+<svg id="d" viewBox="0 0 1280 820" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="UK Trials supply chain data flows with VeriPura CORE"><defs>
 <marker id="m-orange" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E8862A"/></marker>
 <marker id="m-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D13B3B"/></marker>
 <marker id="m-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3F5FBF"/></marker>
@@ -101,14 +155,17 @@ svg{width:100%;height:auto;display:block}
 <!-- Data Sources (Moved left) -->
 <text x="128" y="255" font-size="12" font-weight="700" fill="#6B7588" text-anchor="middle" letter-spacing="0.8">INDEPENDENT DATA SOURCES</text>
 <g class="node core-el" id="n-src-val" data-info="src-val" data-flows="p1 p2 p3 p4 p5" data-steps="3" data-keep="" tabindex="0" role="button" aria-label="Local validators">
+  <rect x="44" y="267" width="168" height="44" fill="transparent" pointer-events="all"/>
   <rect class="shape" x="48" y="275" width="160" height="28" rx="8" fill="#fff" stroke="#0B6E5F" stroke-width="1.6" stroke-dasharray="5 4"/>
   <text x="128" y="294" font-size="12" font-weight="700" fill="#0B5B4F" text-anchor="middle">Validators</text>
 </g>
 <g class="node core-el" id="n-src-lab" data-info="src-lab" data-flows="p1 p2 p3 p4 p5" data-steps="2" data-keep="" tabindex="0" role="button" aria-label="Lab data">
+  <rect x="44" y="322" width="168" height="44" fill="transparent" pointer-events="all"/>
   <rect class="shape" x="48" y="330" width="160" height="28" rx="8" fill="#fff" stroke="#0B6E5F" stroke-width="1.6" stroke-dasharray="5 4"/>
   <text x="128" y="349" font-size="12" font-weight="700" fill="#0B5B4F" text-anchor="middle">Lab data</text>
 </g>
 <g class="node core-el" id="n-src-gov" data-info="src-gov" data-flows="p1 p2 p3 p4 p5" data-steps="1 2" data-keep="" tabindex="0" role="button" aria-label="Government data">
+  <rect x="44" y="377" width="168" height="44" fill="transparent" pointer-events="all"/>
   <rect class="shape" x="48" y="385" width="160" height="28" rx="8" fill="#fff" stroke="#0B6E5F" stroke-width="1.6" stroke-dasharray="5 4"/>
   <text x="128" y="404" font-size="12" font-weight="700" fill="#0B5B4F" text-anchor="middle">Government data</text>
 </g>
@@ -298,13 +355,17 @@ svg{width:100%;height:auto;display:block}
 <line x1="770" y1="744" x2="804" y2="744" stroke="#0B6E5F" stroke-width="2.6" stroke-linecap="round" marker-start="url(#m-teal)" marker-end="url(#m-teal)"/>
 <text x="814" y="748" font-size="12.5" font-weight="500" fill="#3B4658" text-anchor="start">Two-way hash sync &amp; IOTA authentication via TWIN</text>
 
-</svg><div id="info" aria-live="polite"></div></div>
+</svg>
+</div>
+<div id="info" aria-live="polite"></div>
+</div>
+</div>
 <script>
 (function(){
 var D={"info": {
- "meeder": {"t": "Meeder (Approve/Reject)", "p": "Importer in the UK trials. Issues Purchase Orders through CORE™, acts as the Approve/Reject authority in Phase 4, and receives the finalized Trade Passport in Phase 5 for internal audit and compliance records."},
- "sapphire": {"t": "Sapphire (Approve/Reject)", "p": "Importer in the UK trials. Issues Purchase Orders through CORE™, acts as the Approve/Reject authority in Phase 4, and receives the finalized Trade Passport in Phase 5 for internal audit and compliance records."},
- "ipl": {"t": "IPL (Approve/Reject)", "p": "Importer in the UK trials. Issues Purchase Orders through CORE™, acts as the Approve/Reject authority in Phase 4, and receives the finalized Trade Passport in Phase 5 for internal audit and compliance records."},
+ "meeder": {"t": "Meeder (Approve/Reject)", "p": "Importer in the UK trials. Issues Purchase Orders through CORE™, acts as the Approve/Reject authority in Phase 3, and receives the finalized Trade Passport in Phase 4 for internal audit and compliance records."},
+ "sapphire": {"t": "Sapphire (Approve/Reject)", "p": "Importer in the UK trials. Issues Purchase Orders through CORE™, acts as the Approve/Reject authority in Phase 3, and receives the finalized Trade Passport in Phase 4 for internal audit and compliance records."},
+ "ipl": {"t": "IPL (Approve/Reject)", "p": "Importer in the UK trials. Issues Purchase Orders through CORE™, acts as the Approve/Reject authority in Phase 3, and receives the finalized Trade Passport in Phase 4 for internal audit and compliance records."},
  "p1": {"t": "Fresh plant and animal products, Netherlands", "p": "Exporter data is submitted back-and-forth bidirectionally into the central VeriPura CORE™ intake engine."},
  "p2": {"t": "Poultry products, Poland", "p": "Exporter data is submitted back-and-forth bidirectionally into the central VeriPura CORE™ intake engine."},
  "p3": {"t": "Minerva Beef, Brazil", "p": "Exporter data is submitted back-and-forth bidirectionally into the central VeriPura CORE™ intake engine."},
@@ -315,7 +376,7 @@ var D={"info": {
  "core": {"t": "VeriPura CORE™", "p": "Standalone Central Intake Engine connected to Signal via a two-way API bridge, structured around three progressive stages: Identification (Phase 1 regulatory, HS code & buyer requirement checks), Evaluation (Phase 3 document & data cross-checks), and Recommendation (Phase 4 findings & drafted fixes). It also exchanges document hashes and IOTA authentication proofs bidirectionally with TWIN across Phases 1–4."},
  "src-val": {"t": "Validators", "p": "Independent bodies in the country of origin, plus public certifier and national registers.", "items": [["Certifier and national registers", "avail"], ["Recognised halal bodies, checked against official lists", "avail"], ["Lapsed recognition flagged", "avail"]]},
  "src-lab": {"t": "Lab data", "p": "Lab reports, including direct lab API feeds.", "items": [["Lab accreditation checks", "avail"], ["Sample-to-container matching", "avail"], ["Limits for pesticides, heavy metals and pathogens", "avail"]]},
- "src-gov": {"t": "Government data", "p": "Official government regulations, tariff schedules, lists, and alerts that CORE™ checks in Phase 1 (Identification) and Phase 3 (Evaluation).", "items": [["Exporting & importing country regulatory requirements", "avail"], ["Customs tariff schedules & HS code rules", "avail"], ["Food alerts, including RASFF and FDA", "avail"], ["Government lists of banned entities", "avail"], ["Forced-labour screening", "avail"], ["Sanctions screening", "dev"]]},
+ "src-gov": {"t": "Government data", "p": "Official government regulations, tariff schedules, lists, and alerts that CORE™ checks in Phase 1 (Identification) and Phase 2 (Evaluation).", "items": [["Exporting & importing country regulatory requirements", "avail"], ["Customs tariff schedules & HS code rules", "avail"], ["Food alerts, including RASFF and FDA", "avail"], ["Government lists of banned entities", "avail"], ["Forced-labour screening", "avail"], ["Sanctions screening", "dev"]]},
  "isn": {"t": "Information Sharing Network", "p": "The UK government network that shares trade data with the port authorities on the right. Border staff can verify a CORE™ Trade Passport and its IOTA hash anchor by QR code."},
  "ash": {"t": "Ashford Port Health", "p": "Port health authority. Receives data through the Information Sharing Network."},
  "suf": {"t": "Suffolk Coastal Port Health", "p": "Port health authority. Receives data through the Information Sharing Network."},
@@ -410,18 +471,187 @@ svg.querySelectorAll('.node').forEach(function(n){
  n.addEventListener('click',pick);
  n.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});
 });
-document.querySelectorAll('[data-step]').forEach(function(b){b.addEventListener('click',function(){var n=Number(b.getAttribute('data-step'));st.step=(st.step===n)?0:n;if(st.step>0){st.key=null;st.nodeEl=null;}update();});});
+var stage=document.getElementById('stage');
+var FULL_VB={x:0,y:0,w:1280,h:820};
+var PORTRAIT_STEP_VB={
+ 0:{x:0,y:0,w:1280,h:820},
+ 1:{x:28,y:128,w:764,h:554},
+ 2:{x:28,y:128,w:764,h:554},
+ 3:{x:28,y:128,w:764,h:554},
+ 4:{x:32,y:132,w:1224,h:550}
+};
+var curVB={x:0,y:0,w:1280,h:820};
+var animRaf=null;
+var mqMobile=window.matchMedia?window.matchMedia('(max-width: 900px)'):{matches:false};
+var mqPortrait=window.matchMedia?window.matchMedia('(max-width: 900px) and (orientation: portrait)'):{matches:false};
+var reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function setVB(vb){
+ curVB={x:vb.x,y:vb.y,w:vb.w,h:vb.h};
+ svg.setAttribute('viewBox',curVB.x.toFixed(1)+' '+curVB.y.toFixed(1)+' '+curVB.w.toFixed(1)+' '+curVB.h.toFixed(1));
+ stage.classList.toggle('zoomed',curVB.w<1275||curVB.h<815);
+}
+function animateVB(target,instant){
+ if(animRaf){cancelAnimationFrame(animRaf);animRaf=null;}
+ if(instant||reduceMotion){setVB(target);return;}
+ var start={x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h};
+ var t0=performance.now(),dur=320;
+ function tick(now){
+  var p=Math.min(1,(now-t0)/dur);
+  var e=1-Math.pow(1-p,3);
+  setVB({
+   x:start.x+(target.x-start.x)*e,
+   y:start.y+(target.y-start.y)*e,
+   w:start.w+(target.w-start.w)*e,
+   h:start.h+(target.h-start.h)*e
+  });
+  if(p<1){animRaf=requestAnimationFrame(tick);}else{animRaf=null;}
+ }
+ animRaf=requestAnimationFrame(tick);
+}
+function getDefaultVB(){
+ if(mqPortrait.matches){
+  return PORTRAIT_STEP_VB[st.step]||FULL_VB;
+ }
+ return FULL_VB;
+}
+function syncViewportMode(instant){
+ stage.classList.toggle('is-mobile',mqMobile.matches);
+ animateVB(getDefaultVB(),instant);
+}
+function clampVB(vb){
+ var w=Math.max(360,Math.min(1280,vb.w));
+ var h=w*(820/1280);
+ var x=Math.max(-40,Math.min(1280-w+40,vb.x));
+ var y=Math.max(-30,Math.min(820-h+30,vb.y));
+ return {x:x,y:y,w:w,h:h};
+}
+function zoomBy(factor,cxRatio,cyRatio){
+ var rx=(cxRatio===undefined)?0.5:cxRatio;
+ var ry=(cyRatio===undefined)?0.5:cyRatio;
+ var nw=curVB.w*factor;
+ var nh=curVB.h*factor;
+ var next=clampVB({
+  x:curVB.x+(curVB.w-nw)*rx,
+  y:curVB.y+(curVB.h-nh)*ry,
+  w:nw,
+  h:nh
+ });
+ animateVB(next,false);
+}
+
+document.getElementById('z-in').addEventListener('click',function(){zoomBy(0.75);});
+document.getElementById('z-out').addEventListener('click',function(){zoomBy(1.333);});
+document.getElementById('z-fit').addEventListener('click',function(){animateVB(getDefaultVB(),false);});
+
+// Pointer pan & pinch-to-zoom on stage
+var ptrs=new Map();
+var gesture=null;
+var suppressClick=false;
+stage.addEventListener('pointerdown',function(e){
+ if(e.target.closest('.zoom-hud'))return;
+ ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ if(ptrs.size===1){
+  gesture={type:'pan',startX:e.clientX,startY:e.clientY,startVB:{x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h},moved:false};
+ }else if(ptrs.size===2){
+  var pts=Array.from(ptrs.values());
+  var dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y)||1;
+  var midX=(pts[0].x+pts[1].x)/2;
+  var midY=(pts[0].y+pts[1].y)/2;
+  gesture={type:'pinch',startDist:dist,midX:midX,midY:midY,startVB:{x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h}};
+  suppressClick=true;
+ }
+});
+stage.addEventListener('pointermove',function(e){
+ if(!ptrs.has(e.pointerId)||!gesture)return;
+ ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+ var rect=stage.getBoundingClientRect();
+ if(!rect.width||!rect.height)return;
+ if(gesture.type==='pan'&&ptrs.size===1){
+  var dx=e.clientX-gesture.startX;
+  var dy=e.clientY-gesture.startY;
+  if(!gesture.moved&&Math.hypot(dx,dy)<6)return;
+  if(!gesture.moved){
+   gesture.moved=true;
+   suppressClick=true;
+   stage.classList.add('is-dragging');
+   if(animRaf){cancelAnimationFrame(animRaf);animRaf=null;}
+  }
+  var scaleX=gesture.startVB.w/rect.width;
+  var scaleY=gesture.startVB.h/rect.height;
+  var scale=Math.max(scaleX,scaleY);
+  setVB(clampVB({
+   x:gesture.startVB.x-dx*scale,
+   y:gesture.startVB.y-dy*scale,
+   w:gesture.startVB.w,
+   h:gesture.startVB.h
+  }));
+ }else if(gesture.type==='pinch'&&ptrs.size===2){
+  if(animRaf){cancelAnimationFrame(animRaf);animRaf=null;}
+  var pts=Array.from(ptrs.values());
+  var dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y)||1;
+  var ratio=gesture.startDist/dist;
+  var midX=(pts[0].x+pts[1].x)/2;
+  var midY=(pts[0].y+pts[1].y)/2;
+  var rx=Math.max(0,Math.min(1,(midX-rect.left)/rect.width));
+  var ry=Math.max(0,Math.min(1,(midY-rect.top)/rect.height));
+  var nw=gesture.startVB.w*ratio;
+  var nh=gesture.startVB.h*ratio;
+  var panDx=(midX-gesture.midX)*(gesture.startVB.w/rect.width);
+  var panDy=(midY-gesture.midY)*(gesture.startVB.h/rect.height);
+  setVB(clampVB({
+   x:gesture.startVB.x+(gesture.startVB.w-nw)*rx-panDx,
+   y:gesture.startVB.y+(gesture.startVB.h-nh)*ry-panDy,
+   w:nw,
+   h:nh
+  }));
+ }
+});
+function endPointer(e){
+ ptrs.delete(e.pointerId);
+ if(ptrs.size===0){
+  gesture=null;
+  stage.classList.remove('is-dragging');
+  setTimeout(function(){suppressClick=false;},40);
+ }
+}
+stage.addEventListener('pointerup',endPointer);
+stage.addEventListener('pointercancel',endPointer);
+stage.addEventListener('click',function(e){
+ if(suppressClick){e.stopPropagation();e.preventDefault();}
+},true);
+
+document.querySelectorAll('[data-step]').forEach(function(b){
+ b.addEventListener('click',function(){
+  var n=Number(b.getAttribute('data-step'));
+  st.step=(st.step===n)?0:n;
+  if(st.step>0){st.key=null;st.nodeEl=null;}
+  update();
+  animateVB(getDefaultVB(),false);
+  var activeBtn=document.querySelector('[data-step="'+st.step+'"]');
+  if(activeBtn&&activeBtn.scrollIntoView){
+   activeBtn.scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'nearest',inline:'center'});
+  }
+ });
+});
 var core=document.getElementById('core');
 core.addEventListener('change',function(){
  svg.classList.toggle('core-off',!core.checked);
  if(!core.checked){if(st.step>=3){st.step=0;}if(st.nodeEl&&st.nodeEl.classList.contains('core-el')){st.key=null;st.nodeEl=null;}}
  update();
+ animateVB(getDefaultVB(),false);
 });
 var an=document.getElementById('anim');
 function setAnim(){svg.classList.toggle('no-anim',!an.checked);}
 an.addEventListener('change',setAnim);
-if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){an.checked=false;}
-setAnim();update();
+if(reduceMotion){an.checked=false;}
+if(mqMobile.addEventListener){
+ mqMobile.addEventListener('change',function(){syncViewportMode(true);});
+ mqPortrait.addEventListener('change',function(){syncViewportMode(true);});
+}else{
+ window.addEventListener('resize',function(){syncViewportMode(true);});
+}
+setAnim();update();syncViewportMode(true);
 })();
 </script>
 </body>
