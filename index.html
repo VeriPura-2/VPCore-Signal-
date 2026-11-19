@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Interactive UK Trials Supply Chain Data Flows with VeriPura CORE™, Signal TMS, TWIN (IOTA), Importers, Exporters, and UK Port Authorities.">
 <title>UK Trials Supply Chain Data Flows with VeriPura CORE™</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{margin:0;background:#fff;color:#12203A;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .wrap{max-width:1280px;margin:0 auto;padding:16px}
 svg{width:100%;height:auto;display:block}
@@ -30,7 +29,6 @@ svg{width:100%;height:auto;display:block}
 .node:focus{outline:none}
 .node:focus-visible .shape{stroke:#12203A;stroke-width:3.5}
 .node.sel .shape{stroke:#12203A;stroke-width:3.5}
-.node,.edge,.core-pill{transition:opacity .2s}
 .dim{opacity:.13}
 .dot.dim{display:none}
 .core-pill.dim{opacity:.25}
@@ -69,71 +67,50 @@ svg{width:100%;height:auto;display:block}
 .sample b{color:#12203A}
 .sample span{color:#3B4658}
 .fine{font-size:13px;color:#5A6577;margin-top:8px}
-.controls-wrap{display:flex;flex-direction:column;gap:0}
-.svg-stage{position:relative;width:100%;background:#fff;border-radius:10px;touch-action:pan-y}
+.zoom-grp{display:inline-flex;gap:6px;align-items:center;margin-left:auto}
+.zoom-grp button{min-width:38px;padding:7px 11px;min-height:38px;font-size:13px}
+.svg-stage{width:100%;background:#fff;touch-action:pan-y}
 .svg-stage.zoomed{touch-action:none}
 .svg-stage.is-dragging{cursor:grabbing}
-.zoom-hud{position:absolute;right:10px;bottom:10px;display:flex;gap:6px;align-items:center;z-index:10;background:#ffffff;padding:4px;border-radius:999px;border:1.5px solid #C9D1DE;box-shadow:0 2px 8px rgba(18,32,58,.10)}
-.zoom-hud button{-webkit-appearance:none;appearance:none;font:inherit;font-size:13px;font-weight:700;min-width:36px;height:36px;padding:0 10px;border-radius:999px;border:1px solid #C9D1DE;background:#fff;color:#12203A;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1}
-.zoom-hud button:active{background:#12203A;color:#fff}
-.zoom-hud button:focus-visible{outline:3px solid #3F5FBF;outline-offset:2px}
-.touch-hint{display:none;position:absolute;left:10px;bottom:12px;font-size:11.5px;font-weight:600;color:#5A6577;background:rgba(246,247,250,.92);padding:4px 10px;border-radius:999px;border:1px solid #D8DFE9;pointer-events:none;z-index:9}
 .main-split{display:block}
 @media (max-width:900px){
- .wrap{padding:10px max(10px,env(safe-area-inset-right)) 14px max(10px,env(safe-area-inset-left))}
- .bar{margin:0 0 6px;gap:6px 8px}
- .bar .grp{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;width:100%;padding-bottom:2px}
- .bar .grp::-webkit-scrollbar{display:none}
- .bar .lbl{white-space:nowrap;font-size:12px}
- .bar button{white-space:nowrap;font-size:13.5px;padding:8px 13px;min-height:40px;flex-shrink:0}
- .bar label{font-size:13.5px;min-height:38px;white-space:nowrap}
- .touch-hint{display:block}
-}
-@media (max-width:900px) and (orientation:portrait){
- .svg-stage{height:46vh;height:clamp(300px,48vh,470px);min-height:280px;border:1.5px solid #E2E7F0}
- .svg-stage svg{width:100%;height:100%;display:block}
- #info{margin-top:8px;padding:12px 14px;min-height:120px}
+ .wrap{padding:10px}
+ .bar{margin:0 0 6px;gap:6px}
+ .bar .grp{gap:6px}
+ .bar .lbl{font-size:12px;width:100%}
+ .bar button{font-size:13px;padding:7px 11px;min-height:38px}
+ .bar label{font-size:13.5px;min-height:38px;padding:0 4px}
+ #info{margin-top:8px;padding:12px 14px;min-height:110px}
  #info h2{font-size:16px}
  #info p,#info ul,#info .sample{font-size:14px}
 }
 @media (max-width:950px) and (orientation:landscape) and (max-height:540px){
- .wrap{padding:6px max(10px,env(safe-area-inset-right)) 6px max(10px,env(safe-area-inset-left));max-width:100%}
- .controls-wrap{flex-direction:row;align-items:center;gap:8px;margin-bottom:6px}
- .controls-wrap .bar{margin:0;flex-shrink:0}
- .controls-wrap .bar:last-child{flex:1;min-width:0}
- .bar label{font-size:12.5px;min-height:34px;padding:0 4px;gap:5px}
- .bar input{width:17px;height:17px}
+ .wrap{padding:6px 10px;max-width:100%}
+ .bar{margin:0 0 5px;gap:5px}
  .bar .lbl{display:none}
- .bar button{font-size:12.5px;padding:6px 11px;min-height:34px}
- .main-split{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,1fr);grid-template-rows:minmax(0,1fr);gap:8px;height:calc(100vh - 54px);height:calc(100svh - 54px);min-height:230px;max-height:480px;align-items:stretch}
- .svg-stage{height:100%;min-height:220px;border:1.5px solid #E2E7F0}
- .svg-stage svg{width:100%;height:100%;display:block}
- .zoom-hud{right:6px;bottom:6px;padding:3px;gap:4px}
- .zoom-hud button{min-width:30px;height:30px;font-size:12px;padding:0 8px}
- .touch-hint{display:none}
- #info{margin-top:0;height:100%;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px}
+ .bar label{font-size:12.5px;min-height:32px;padding:0 4px;gap:5px}
+ .bar input{width:16px;height:16px}
+ .bar button{font-size:12px;padding:5px 9px;min-height:32px}
+ .main-split{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(240px,1fr);gap:8px;align-items:start}
+ #info{margin-top:0;padding:10px 12px;max-height:78vh;overflow-y:auto}
  #info h2{font-size:15px}
- #info p,#info ul,#info .sample{font-size:13px;line-height:1.42}
+ #info p,#info ul,#info .sample{font-size:13px;line-height:1.4}
  #info ul{columns:1;margin-top:6px}
 }
 @media (max-width:760px){#info ul{columns:1}}
-@media (prefers-reduced-motion:reduce){[data-flows]{transition:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="controls-wrap">
 <div class="bar" role="toolbar" aria-label="Diagram controls">
 <label><input type="checkbox" id="core" checked><span>VeriPura CORE&trade; on</span></label>
 <label><input type="checkbox" id="anim" checked><span>Animate data</span></label>
+<div class="zoom-grp" role="group" aria-label="Zoom controls"><button type="button" id="z-out" aria-label="Zoom out">Zoom &minus;</button><button type="button" id="z-fit" aria-label="Fit diagram">Fit</button><button type="button" id="z-in" aria-label="Zoom in">Zoom +</button></div>
 </div>
 <div class="bar"><div class="grp" role="group" aria-label="How CORE works, four steps"><span class="lbl">How CORE&trade; works</span><button type="button" class="step" data-step="0" aria-pressed="true">Full workflow</button><button type="button" class="step" data-step="1" aria-pressed="false">1 Identify the Requirements</button><button type="button" class="step" data-step="2" aria-pressed="false">2 Check and chase</button><button type="button" class="step" data-step="3" aria-pressed="false">3 Confirm and share</button><button type="button" class="step" data-step="4" aria-pressed="false">4 Issue passport</button></div></div>
-</div>
 <div class="main-split">
 <div class="svg-stage" id="stage">
-<div class="touch-hint" aria-hidden="true">Pinch or drag to explore &bull; Tap any box</div>
-<div class="zoom-hud" role="group" aria-label="Diagram zoom controls"><button type="button" id="z-out" aria-label="Zoom out">&minus;</button><button type="button" id="z-fit" aria-label="Fit diagram">Fit</button><button type="button" id="z-in" aria-label="Zoom in">+</button></div>
-<svg id="d" width="1280" height="820" viewBox="0 0 1280 820" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="group" aria-label="UK Trials supply chain data flows with VeriPura CORE"><defs>
+<svg id="d" viewBox="0 0 1280 820" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="UK Trials supply chain data flows with VeriPura CORE"><defs>
 <marker id="m-orange" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E8862A"/></marker>
 <marker id="m-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D13B3B"/></marker>
 <marker id="m-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3F5FBF"/></marker>
@@ -296,51 +273,51 @@ svg{width:100%;height:auto;display:block}
 
 
 <!-- Animations for Importer flow (Orange, 50% speed) -->
-<circle id="dot-0" transform="translate(300,229)" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
-<circle id="dot-1" transform="translate(300,275)" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
-<circle id="dot-2" transform="translate(300,275)" class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
-<circle id="dot-3" transform="translate(480,229)" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
-<circle id="dot-4" transform="translate(420,275)" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
-<circle id="dot-5" transform="translate(420,275)" class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
-<circle id="dot-6" transform="translate(660,229)" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
-<circle id="dot-7" transform="translate(465,275)" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
-<circle id="dot-8" transform="translate(465,275)" class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
+<circle id="dot-0" cx="300" cy="229" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
+<circle id="dot-1" cx="300" cy="275" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
+<circle id="dot-2" cx="300" cy="275" class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
+<circle id="dot-3" cx="480" cy="229" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
+<circle id="dot-4" cx="420" cy="275" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
+<circle id="dot-5" cx="420" cy="275" class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
+<circle id="dot-6" cx="660" cy="229" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
+<circle id="dot-7" cx="465" cy="275" class="dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
+<circle id="dot-8" cx="465" cy="275" class="dot bi-dot" r="4.6" fill="#E8862A" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3"/>
 
 <!-- Animations for Supplier/Exporter flow (Blue, 50% speed) -->
-<circle id="dot-9" transform="translate(119,560)" class="dot" r="4.6" fill="#3F5FBF" data-flows="p1" data-steps="1 2 3"/>
-<circle id="dot-10" transform="translate(265,405)" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p1" data-steps="1 2 3 4"/>
-<circle id="dot-11" transform="translate(268,560)" class="dot" r="4.6" fill="#3F5FBF" data-flows="p2" data-steps="1 2 3"/>
-<circle id="dot-12" transform="translate(305,405)" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p2" data-steps="1 2 3 4"/>
-<circle id="dot-13" transform="translate(412,560)" class="dot" r="4.6" fill="#3F5FBF" data-flows="p3" data-steps="1 2 3"/>
-<circle id="dot-14" transform="translate(345,405)" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p3" data-steps="1 2 3 4"/>
-<circle id="dot-15" transform="translate(552,560)" class="dot" r="4.6" fill="#3F5FBF" data-flows="p4" data-steps="1 2 3"/>
-<circle id="dot-16" transform="translate(385,405)" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p4" data-steps="1 2 3 4"/>
-<circle id="dot-17" transform="translate(698,560)" class="dot" r="4.6" fill="#3F5FBF" data-flows="p5" data-steps="1 2 3"/>
-<circle id="dot-18" transform="translate(425,405)" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p5" data-steps="1 2 3 4"/>
+<circle id="dot-9" cx="119" cy="560" class="dot" r="4.6" fill="#3F5FBF" data-flows="p1" data-steps="1 2 3"/>
+<circle id="dot-10" cx="265" cy="405" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p1" data-steps="1 2 3 4"/>
+<circle id="dot-11" cx="268" cy="560" class="dot" r="4.6" fill="#3F5FBF" data-flows="p2" data-steps="1 2 3"/>
+<circle id="dot-12" cx="305" cy="405" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p2" data-steps="1 2 3 4"/>
+<circle id="dot-13" cx="412" cy="560" class="dot" r="4.6" fill="#3F5FBF" data-flows="p3" data-steps="1 2 3"/>
+<circle id="dot-14" cx="345" cy="405" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p3" data-steps="1 2 3 4"/>
+<circle id="dot-15" cx="552" cy="560" class="dot" r="4.6" fill="#3F5FBF" data-flows="p4" data-steps="1 2 3"/>
+<circle id="dot-16" cx="385" cy="405" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p4" data-steps="1 2 3 4"/>
+<circle id="dot-17" cx="698" cy="560" class="dot" r="4.6" fill="#3F5FBF" data-flows="p5" data-steps="1 2 3"/>
+<circle id="dot-18" cx="425" cy="405" class="dot bi-dot" r="4.6" fill="#3F5FBF" data-flows="p5" data-steps="1 2 3 4"/>
 <!-- Internal Flow (Purple, 50% speed) -->
-<circle id="dot-19" transform="translate(495,346)" class="dot" r="4.6" fill="#7A3E9D" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"/>
-<circle id="dot-20" transform="translate(535,346)" class="dot bi-dot" r="4.6" fill="#7A3E9D" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"/>
+<circle id="dot-19" cx="495" cy="346" class="dot" r="4.6" fill="#7A3E9D" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"/>
+<circle id="dot-20" cx="535" cy="346" class="dot bi-dot" r="4.6" fill="#7A3E9D" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"/>
 
 <!-- Animations for Data Sources flow (Teal, 50% speed) -->
-<circle id="dot-21" transform="translate(208,289)" class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="3"/>
-<circle id="dot-22" transform="translate(250,289)" class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="3"/>
-<circle id="dot-23" transform="translate(208,344)" class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="2"/>
-<circle id="dot-24" transform="translate(250,344)" class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="2"/>
-<circle id="dot-25" transform="translate(208,399)" class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2"/>
-<circle id="dot-26" transform="translate(250,399)" class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2"/>
+<circle id="dot-21" cx="208" cy="289" class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="3"/>
+<circle id="dot-22" cx="250" cy="289" class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="3"/>
+<circle id="dot-23" cx="208" cy="344" class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="2"/>
+<circle id="dot-24" cx="250" cy="344" class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="2"/>
+<circle id="dot-25" cx="208" cy="399" class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2"/>
+<circle id="dot-26" cx="250" cy="399" class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2"/>
 
 <!-- Animations for Two-Way Hash & IOTA Authentication + Downstream (Teal & Green, 50% speed) -->
-<circle id="dot-27" transform="translate(466,405)" class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4"/>
-<circle id="dot-28" transform="translate(466,438)" class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4"/>
-<circle id="dot-29" transform="translate(700,405)" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"/>
-<circle id="dot-30" transform="translate(700,438)" class="dot bi-dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"/>
+<circle id="dot-27" cx="466" cy="405" class="dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4"/>
+<circle id="dot-28" cx="466" cy="438" class="dot bi-dot core-el" r="4.6" fill="#0B6E5F" data-flows="p1 p2 p3 p4 p5" data-steps="1 2 3 4"/>
+<circle id="dot-29" cx="700" cy="405" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"/>
+<circle id="dot-30" cx="700" cy="438" class="dot bi-dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="3 4"/>
 
-<circle id="dot-31" transform="translate(760,468)" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
-<circle id="dot-32" transform="translate(905,340)" class="dot bi-dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
+<circle id="dot-31" cx="760" cy="468" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
+<circle id="dot-32" cx="905" cy="340" class="dot bi-dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
 
-<circle id="dot-33" transform="translate(760,484)" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2" data-steps="4"/>
-<circle id="dot-34" transform="translate(1075,340)" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
-<circle id="dot-35" transform="translate(1075,340)" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
+<circle id="dot-33" cx="760" cy="484" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2" data-steps="4"/>
+<circle id="dot-34" cx="1075" cy="340" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
+<circle id="dot-35" cx="1075" cy="340" class="dot" r="4.6" fill="#2E8B3E" data-flows="p1 p2 p3 p4 p5" data-steps="4"/>
 
 <!-- Legend Updates -->
 <line x1="48" y1="718" x2="82" y2="718" stroke="#E8862A" stroke-width="2.6" stroke-linecap="round"/>
@@ -403,357 +380,4 @@ var D={"info": {
  "p2": {"c": [6, 1, 1], "t": "Approval expires before arrival", "e": "Establishment approval expires in 6 days. Planned arrival is in 9 days.", "r": "Documents must be valid on arrival. Alert threshold: 7 days.", "x": "Request a renewed approval before dispatch.", "n": "Cold-chain sensor check (in development)."},
  "p3": {"c": [9, 1, 0], "t": "Missing health certificate", "e": "Veterinary health certificate is missing from the submitted bundle.", "r": "Beef exports require a valid veterinary certificate.", "x": "Request the exporter to upload the missing certificate.", "n": ""},
  "p4": {"c": [8, 1, 1], "t": "Lab sample does not match the container", "e": "Lab report names container ABCU 123456 7. Bill of lading shows ABCU 123465 7.", "r": "The lab sample must match the container shipped.", "x": "Ask the lab to confirm the container and reissue the report.", "n": "One lab parameter was missing from the report."},
- "p5": {"c": [7, 1, 0], "t": "Certificate number differs", "e": "Phytosanitary certificate: NL-PH-48213. Commercial invoice: NL-PH-48231.", "r": "Certificate numbers must agree across documents.", "x": "Ask the exporter to correct the invoice reference.", "n": ""}
-},
-"rev": "Importer decides what happens next. CORE™ never approves or clears a shipment."};
-
-var svg=document.getElementById('d'),box=document.getElementById('info');
-var st={flow:'all',step:0,key:null,nodeEl:null};
-function E(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e;}
-function list(arr){var ul=E('ul');arr.forEach(function(i){var li=E('li');li.appendChild(document.createTextNode(i[0]));if(i[1]){li.appendChild(E('span','badge '+(i[1]==='dev'?'dev':'avail'),i[1]==='dev'?'In development':'Available'));}ul.appendChild(li);});return ul;}
-function head(t,p){box.appendChild(E('h2',null,t));if(p)box.appendChild(E('p',null,p));}
-function sample(){
- var k=st.flow==='all'?'p3':st.flow,s=D.samples[k];
- box.appendChild(E('p','fine','Illustrative example findings shared with the importer for confirmation (not a real consignment).'));
- var row=E('div');
- [['m','Matched',s.c[0]],['f','Flagged',s.c[1]],['n','Not checked',s.c[2]]].forEach(function(x){row.appendChild(E('span','chip '+x[0],x[1]+' '+x[2]));});
- box.appendChild(row);
- var g=E('div','sample');
- function r(a,b){g.appendChild(E('b',null,a));g.appendChild(E('span',null,b));}
- r('Flagged',s.t);r('Evidence',s.e);r('Rule',s.r);r('Drafted fix',s.x);if(s.n){r('Not checked',s.n);}
- box.appendChild(g);
- box.appendChild(E('p','fine',D.rev));
-}
-function passport(){
- var g=E('div','sample');
- function r(a,b){g.appendChild(E('b',null,a));g.appendChild(E('span',null,b));}
- r('Trade Passport','Issued simultaneously to the importer and the exporter once the importer confirms Approve in CORE™.');
- r('IOTA Hash Anchor','Complete audit trail of SHA-256 hashes (initial, chased, and updated documents) anchored on IOTA via TWIN (e.g., 8f4a2c91...e307).');
- r('Data Privacy','Commercial documents remain off-chain inside CORE™ and Signal; only the cryptographic hash is anchored on IOTA.');
- r('Port Verification','Shared via Information Sharing Network and Destin8; border staff verify record integrity by QR code.');
- r('Importer Audit Copy','The signed digital Trade Passport—linked to the immutable IOTA hash trail—is delivered back to the importer for internal compliance and regulatory audits.');
- box.appendChild(g);
-}
-function renderStep(){
- var s=D.steps[st.step-1];
- head('Step '+st.step+' of 4: '+s.t,s.p);
- if(st.step===1||st.step===2){box.appendChild(list(s.items));}
- else if(st.step===3){
-  if(s.items){box.appendChild(list(s.items));}
-  var w=E('div','chips');D.outcomes.forEach(function(o){var d=E('div');d.appendChild(E('span','chip '+o[0],o[1]));d.appendChild(document.createTextNode(o[2]));w.appendChild(d);});
-  box.appendChild(w);
-  sample();
- }
- else{passport();}
-}
-function render(){
- box.innerHTML='';
- if(st.step>0){renderStep();return;}
- if(st.key){var i=D.info[st.key];head(i.t,i.p);if(i.items){box.appendChild(list(i.items));}return;}
- head('Click any box for details','Step through how CORE™ works using the numbered buttons, switch VeriPura CORE™ on or off, or pause the animation.');
-}
-function apply(){
- svg.querySelectorAll('[data-flows]').forEach(function(el){
-  var f=el.getAttribute('data-flows');
-  if(f===''){el.classList.remove('dim');return;}
-  var s=el.getAttribute('data-steps')||'';
-  var inFlow=st.flow==='all'||f.split(' ').indexOf(st.flow)>=0;
-  var inStep=st.step===0||s.split(' ').indexOf(String(st.step))>=0;
-  var keep=(el.getAttribute('data-keep')||'').split(' ').indexOf(String(st.step))>=0;
-  el.classList.toggle('dim',!(keep||(inFlow&&inStep)));
- });
- svg.querySelectorAll('.core-pill').forEach(function(p){p.classList.toggle('pill-active',Number(p.getAttribute('data-active-step'))===st.step);});
- svg.querySelectorAll('.step-only').forEach(function(el){el.style.display=(Number(el.getAttribute('data-step-only'))===st.step)?'':'none';});
- document.querySelectorAll('[data-step]').forEach(function(b){b.setAttribute('aria-pressed',Number(b.getAttribute('data-step'))===st.step?'true':'false');});
- svg.querySelectorAll('.node').forEach(function(n){n.classList.toggle('sel',n===st.nodeEl&&st.step===0);});
-}
-function update(){apply();render();}
-svg.querySelectorAll('.node').forEach(function(n){
- function pick(){st.key=n.getAttribute('data-info');st.nodeEl=n;st.step=0;update();}
- n.addEventListener('click',pick);
- n.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});
-});
-var stage=document.getElementById('stage');
-var FULL_VB={x:0,y:0,w:1280,h:820};
-var PORTRAIT_STEP_VB={
- 0:{x:0,y:0,w:1280,h:820},
- 1:{x:28,y:128,w:764,h:554},
- 2:{x:28,y:128,w:764,h:554},
- 3:{x:28,y:128,w:764,h:554},
- 4:{x:32,y:132,w:1224,h:550}
-};
-var curVB={x:0,y:0,w:1280,h:820};
-var animRaf=null;
-var mqMobile=window.matchMedia?window.matchMedia('(max-width: 900px)'):{matches:false};
-var mqPortrait=window.matchMedia?window.matchMedia('(max-width: 900px) and (orientation: portrait)'):{matches:false};
-var reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-function setVB(vb){
- curVB={x:vb.x,y:vb.y,w:vb.w,h:vb.h};
- svg.setAttribute('viewBox',curVB.x.toFixed(1)+' '+curVB.y.toFixed(1)+' '+curVB.w.toFixed(1)+' '+curVB.h.toFixed(1));
- stage.classList.toggle('zoomed',curVB.w<1275||curVB.h<815);
-}
-function animateVB(target,instant){
- if(animRaf){cancelAnimationFrame(animRaf);animRaf=null;}
- if(instant||reduceMotion){setVB(target);return;}
- var start={x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h};
- var t0=performance.now(),dur=320;
- function tick(now){
-  var p=Math.min(1,(now-t0)/dur);
-  var e=1-Math.pow(1-p,3);
-  setVB({
-   x:start.x+(target.x-start.x)*e,
-   y:start.y+(target.y-start.y)*e,
-   w:start.w+(target.w-start.w)*e,
-   h:start.h+(target.h-start.h)*e
-  });
-  if(p<1){animRaf=requestAnimationFrame(tick);}else{animRaf=null;}
- }
- animRaf=requestAnimationFrame(tick);
-}
-function getDefaultVB(){
- var isPort=mqPortrait.matches||(window.innerWidth<=900&&window.innerHeight>window.innerWidth);
- if(isPort){
-  return PORTRAIT_STEP_VB[st.step]||FULL_VB;
- }
- return FULL_VB;
-}
-function syncViewportMode(instant){
- stage.classList.toggle('is-mobile',mqMobile.matches);
- animateVB(getDefaultVB(),instant);
-}
-function clampVB(vb){
- var w=Math.max(360,Math.min(1280,vb.w));
- var h=w*(820/1280);
- var x=Math.max(-40,Math.min(1280-w+40,vb.x));
- var y=Math.max(-30,Math.min(820-h+30,vb.y));
- return {x:x,y:y,w:w,h:h};
-}
-function zoomBy(factor,cxRatio,cyRatio){
- var rx=(cxRatio===undefined)?0.5:cxRatio;
- var ry=(cyRatio===undefined)?0.5:cyRatio;
- var nw=curVB.w*factor;
- var nh=curVB.h*factor;
- var next=clampVB({
-  x:curVB.x+(curVB.w-nw)*rx,
-  y:curVB.y+(curVB.h-nh)*ry,
-  w:nw,
-  h:nh
- });
- animateVB(next,false);
-}
-
-document.getElementById('z-in').addEventListener('click',function(){zoomBy(0.75);});
-document.getElementById('z-out').addEventListener('click',function(){zoomBy(1.333);});
-document.getElementById('z-fit').addEventListener('click',function(){animateVB(getDefaultVB(),false);});
-
-// Pointer + Touch pan & pinch-to-zoom on stage
-var ptrs=new Map();
-var gesture=null;
-var suppressClick=false;
-if(!window.PointerEvent){
- var tGesture=null;
- stage.addEventListener('touchstart',function(e){
-  if(e.target.closest('.zoom-hud'))return;
-  if(e.touches.length===1){
-   tGesture={type:'pan',startX:e.touches[0].clientX,startY:e.touches[0].clientY,startVB:{x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h},moved:false};
-  }else if(e.touches.length===2){
-   var d=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY)||1;
-   var mx=(e.touches[0].clientX+e.touches[1].clientX)/2;
-   var my=(e.touches[0].clientY+e.touches[1].clientY)/2;
-   tGesture={type:'pinch',startDist:d,midX:mx,midY:my,startVB:{x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h}};
-   suppressClick=true;
-  }
- },{passive:true});
- stage.addEventListener('touchmove',function(e){
-  if(!tGesture)return;
-  var rect=stage.getBoundingClientRect();
-  if(!rect.width||!rect.height)return;
-  if(tGesture.type==='pan'&&e.touches.length===1){
-   var dx=e.touches[0].clientX-tGesture.startX;
-   var dy=e.touches[0].clientY-tGesture.startY;
-   if(!tGesture.moved&&Math.hypot(dx,dy)<6)return;
-   tGesture.moved=true;suppressClick=true;
-   var sc=Math.max(tGesture.startVB.w/rect.width,tGesture.startVB.h/rect.height);
-   setVB(clampVB({x:tGesture.startVB.x-dx*sc,y:tGesture.startVB.y-dy*sc,w:tGesture.startVB.w,h:tGesture.startVB.h}));
-  }else if(tGesture.type==='pinch'&&e.touches.length===2){
-   var d=Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY)||1;
-   var ratio=tGesture.startDist/d;
-   var mx=(e.touches[0].clientX+e.touches[1].clientX)/2;
-   var my=(e.touches[0].clientY+e.touches[1].clientY)/2;
-   var rx=Math.max(0,Math.min(1,(mx-rect.left)/rect.width));
-   var ry=Math.max(0,Math.min(1,(my-rect.top)/rect.height));
-   var nw=tGesture.startVB.w*ratio,nh=tGesture.startVB.h*ratio;
-   setVB(clampVB({x:tGesture.startVB.x+(tGesture.startVB.w-nw)*rx,y:tGesture.startVB.y+(tGesture.startVB.h-nh)*ry,w:nw,h:nh}));
-  }
- },{passive:true});
- stage.addEventListener('touchend',function(){tGesture=null;setTimeout(function(){suppressClick=false;},40);});
-}
-stage.addEventListener('pointerdown',function(e){
- if(e.target.closest('.zoom-hud'))return;
- ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
- if(ptrs.size===1){
-  gesture={type:'pan',startX:e.clientX,startY:e.clientY,startVB:{x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h},moved:false};
- }else if(ptrs.size===2){
-  var pts=Array.from(ptrs.values());
-  var dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y)||1;
-  var midX=(pts[0].x+pts[1].x)/2;
-  var midY=(pts[0].y+pts[1].y)/2;
-  gesture={type:'pinch',startDist:dist,midX:midX,midY:midY,startVB:{x:curVB.x,y:curVB.y,w:curVB.w,h:curVB.h}};
-  suppressClick=true;
- }
-});
-stage.addEventListener('pointermove',function(e){
- if(!ptrs.has(e.pointerId)||!gesture)return;
- ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
- var rect=stage.getBoundingClientRect();
- if(!rect.width||!rect.height)return;
- if(gesture.type==='pan'&&ptrs.size===1){
-  var dx=e.clientX-gesture.startX;
-  var dy=e.clientY-gesture.startY;
-  if(!gesture.moved&&Math.hypot(dx,dy)<6)return;
-  if(!gesture.moved){
-   gesture.moved=true;
-   suppressClick=true;
-   stage.classList.add('is-dragging');
-   if(animRaf){cancelAnimationFrame(animRaf);animRaf=null;}
-  }
-  var scaleX=gesture.startVB.w/rect.width;
-  var scaleY=gesture.startVB.h/rect.height;
-  var scale=Math.max(scaleX,scaleY);
-  setVB(clampVB({
-   x:gesture.startVB.x-dx*scale,
-   y:gesture.startVB.y-dy*scale,
-   w:gesture.startVB.w,
-   h:gesture.startVB.h
-  }));
- }else if(gesture.type==='pinch'&&ptrs.size===2){
-  if(animRaf){cancelAnimationFrame(animRaf);animRaf=null;}
-  var pts=Array.from(ptrs.values());
-  var dist=Math.hypot(pts[1].x-pts[0].x,pts[1].y-pts[0].y)||1;
-  var ratio=gesture.startDist/dist;
-  var midX=(pts[0].x+pts[1].x)/2;
-  var midY=(pts[0].y+pts[1].y)/2;
-  var rx=Math.max(0,Math.min(1,(midX-rect.left)/rect.width));
-  var ry=Math.max(0,Math.min(1,(midY-rect.top)/rect.height));
-  var nw=gesture.startVB.w*ratio;
-  var nh=gesture.startVB.h*ratio;
-  var panDx=(midX-gesture.midX)*(gesture.startVB.w/rect.width);
-  var panDy=(midY-gesture.midY)*(gesture.startVB.h/rect.height);
-  setVB(clampVB({
-   x:gesture.startVB.x+(gesture.startVB.w-nw)*rx-panDx,
-   y:gesture.startVB.y+(gesture.startVB.h-nh)*ry-panDy,
-   w:nw,
-   h:nh
-  }));
- }
-});
-function resetPointers(){
- ptrs.clear();
- gesture=null;
- stage.classList.remove('is-dragging');
- setTimeout(function(){suppressClick=false;},40);
-}
-function endPointer(e){
- ptrs.delete(e.pointerId);
- if(e.type==='pointercancel'||ptrs.size===0){
-  resetPointers();
- }
-}
-stage.addEventListener('pointerup',endPointer);
-stage.addEventListener('pointercancel',endPointer);
-window.addEventListener('blur',resetPointers);
-stage.addEventListener('click',function(e){
- if(suppressClick){e.stopPropagation();e.preventDefault();}
-},true);
-
-document.querySelectorAll('[data-step]').forEach(function(b){
- b.addEventListener('click',function(){
-  var n=Number(b.getAttribute('data-step'));
-  st.step=(st.step===n)?0:n;
-  if(st.step>0){st.key=null;st.nodeEl=null;}
-  update();
-  animateVB(getDefaultVB(),false);
-  var activeBtn=document.querySelector('[data-step="'+st.step+'"]');
-  if(activeBtn&&activeBtn.scrollIntoView){
-   activeBtn.scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'nearest',inline:'center'});
-  }
- });
-});
-var core=document.getElementById('core');
-core.addEventListener('change',function(){
- svg.classList.toggle('core-off',!core.checked);
- if(!core.checked){if(st.step>=3){st.step=0;}if(st.nodeEl&&st.nodeEl.classList.contains('core-el')){st.key=null;st.nodeEl=null;}}
- update();
- animateVB(getDefaultVB(),false);
-});
-var PATH_DATA={"e-core-sig":{"len":40.0,"segs":[[495.0,346.0,535.0,346.0,0.0,40.0]]},"e-imp-mee":{"len":46.0,"segs":[[300.0,229.0,300.0,275.0,0.0,46.0]]},"e-imp-sap":{"len":106.0,"segs":[[480.0,229.0,480.0,240.0,0.0,11.0],[480.0,240.0,420.0,240.0,11.0,60.0],[420.0,240.0,420.0,275.0,71.0,35.0]]},"e-imp-ipl":{"len":241.0,"segs":[[660.0,229.0,660.0,255.0,0.0,26.0],[660.0,255.0,465.0,255.0,26.0,195.0],[465.0,255.0,465.0,275.0,221.0,20.0]]},"e-sup-p1":{"len":301.0,"segs":[[119.0,560.0,119.0,518.0,0.0,42.0],[119.0,518.0,265.0,518.0,42.0,146.0],[265.0,518.0,265.0,405.0,188.0,113.0]]},"e-sup-p2":{"len":192.0,"segs":[[268.0,560.0,268.0,536.0,0.0,24.0],[268.0,536.0,305.0,536.0,24.0,37.0],[305.0,536.0,305.0,405.0,61.0,131.0]]},"e-sup-p3":{"len":222.0,"segs":[[412.0,560.0,412.0,542.0,0.0,18.0],[412.0,542.0,345.0,542.0,18.0,67.0],[345.0,542.0,345.0,405.0,85.0,137.0]]},"e-sup-p4":{"len":322.0,"segs":[[552.0,560.0,552.0,530.0,0.0,30.0],[552.0,530.0,385.0,530.0,30.0,167.0],[385.0,530.0,385.0,405.0,197.0,125.0]]},"e-sup-p5":{"len":428.0,"segs":[[698.0,560.0,698.0,518.0,0.0,42.0],[698.0,518.0,425.0,518.0,42.0,273.0],[425.0,518.0,425.0,405.0,315.0,113.0]]},"e-ds-val":{"len":42.0,"segs":[[208.0,289.0,250.0,289.0,0.0,42.0]]},"e-ds-lab":{"len":42.0,"segs":[[208.0,344.0,250.0,344.0,0.0,42.0]]},"e-ds-gov":{"len":42.0,"segs":[[208.0,399.0,250.0,399.0,0.0,42.0]]},"e-core-twin":{"len":33.0,"segs":[[466.0,405.0,466.0,438.0,0.0,33.0]]},"e-sig-twin":{"len":33.0,"segs":[[700.0,405.0,700.0,438.0,0.0,33.0]]},"e-twin-isn":{"len":273.0,"segs":[[760.0,468.0,850.0,468.0,0.0,90.0],[850.0,468.0,850.0,340.0,90.0,128.0],[850.0,340.0,905.0,340.0,218.0,55.0]]},"e-twin-mcp":{"len":155.0,"segs":[[760.0,484.0,915.0,484.0,0.0,155.0]]},"e-isn-ash":{"len":163.0,"segs":[[1075.0,340.0,1090.0,340.0,0.0,15.0],[1090.0,340.0,1090.0,220.0,15.0,120.0],[1090.0,220.0,1118.0,220.0,135.0,28.0]]},"e-isn-suf":{"len":223.0,"segs":[[1075.0,340.0,1090.0,340.0,0.0,15.0],[1090.0,340.0,1090.0,520.0,15.0,180.0],[1090.0,520.0,1118.0,520.0,195.0,28.0]]}};
-var DOT_LIST=[["dot-0","e-imp-mee",4.4,0],["dot-1","e-imp-mee",4.4,1],["dot-2","e-imp-mee",4.4,1],["dot-3","e-imp-sap",8.5,0],["dot-4","e-imp-sap",8.5,1],["dot-5","e-imp-sap",8.5,1],["dot-6","e-imp-ipl",19.3,0],["dot-7","e-imp-ipl",19.3,1],["dot-8","e-imp-ipl",19.3,1],["dot-9","e-sup-p1",24.1,0],["dot-10","e-sup-p1",24.1,1],["dot-11","e-sup-p2",15.4,0],["dot-12","e-sup-p2",15.4,1],["dot-13","e-sup-p3",17.8,0],["dot-14","e-sup-p3",17.8,1],["dot-15","e-sup-p4",25.8,0],["dot-16","e-sup-p4",25.8,1],["dot-17","e-sup-p5",34.2,0],["dot-18","e-sup-p5",34.2,1],["dot-19","e-core-sig",4.0,0],["dot-20","e-core-sig",4.0,1],["dot-21","e-ds-val",3.0,0],["dot-22","e-ds-val",3.0,1],["dot-23","e-ds-lab",3.4,0],["dot-24","e-ds-lab",3.4,1],["dot-25","e-ds-gov",3.8,0],["dot-26","e-ds-gov",3.8,1],["dot-27","e-core-twin",4.0,0],["dot-28","e-core-twin",4.0,1],["dot-29","e-sig-twin",5.0,0],["dot-30","e-sig-twin",5.0,1],["dot-31","e-twin-isn",8.0,0],["dot-32","e-twin-isn",8.0,1],["dot-33","e-twin-mcp",5.0,0],["dot-34","e-isn-ash",7.0,0],["dot-35","e-isn-suf",8.0,0]].map(function(item){
- return {el:document.getElementById(item[0]),p:PATH_DATA[item[1]],dur:item[2]*1000,rev:item[3]};
-});
-function ptAt(p,t){
- var dist=t*p.len,segs=p.segs;
- for(var i=0;i<segs.length;i++){
-  var s=segs[i];
-  if(dist<=s[4]+s[5]||i===segs.length-1){
-   var f=s[5]>0?Math.max(0,Math.min(1,(dist-s[4])/s[5])):0;
-   return [s[0]+(s[2]-s[0])*f,s[1]+(s[3]-s[1])*f];
-  }
- }
- return [segs[0][0],segs[0][1]];
-}
-var an=document.getElementById('anim');
-var dotRaf=null,dotStart=performance.now(),lastFrame=0;
-function stepDots(now){
- if(!an.checked||document.hidden){dotRaf=null;return;}
- if(now-lastFrame>=32){
-  lastFrame=now;
-  var elapsed=now-dotStart;
-  var coreOff=svg.classList.contains('core-off');
-  for(var i=0;i<DOT_LIST.length;i++){
-   var d=DOT_LIST[i],el=d.el;
-   if(!el||el.classList.contains('dim'))continue;
-   if(coreOff&&(el.classList.contains('core-el')||el.classList.contains('bi-dot')))continue;
-   var t=(elapsed%d.dur)/d.dur;
-   if(d.rev)t=1-t;
-   var xy=ptAt(d.p,t);
-   el.setAttribute('transform','translate('+xy[0].toFixed(1)+','+xy[1].toFixed(1)+')');
-  }
- }
- dotRaf=requestAnimationFrame(stepDots);
-}
-function syncDots(){
- var shouldRun=an.checked&&!document.hidden;
- if(shouldRun&&!dotRaf){
-  lastFrame=0;
-  dotRaf=requestAnimationFrame(stepDots);
- }else if(!shouldRun&&dotRaf){
-  cancelAnimationFrame(dotRaf);
-  dotRaf=null;
- }
-}
-function setAnim(){
- svg.classList.toggle('no-anim',!an.checked);
- syncDots();
-}
-an.addEventListener('change',setAnim);
-if(reduceMotion){an.checked=false;}
-if(mqMobile.addEventListener){
- mqMobile.addEventListener('change',function(){syncViewportMode(true);});
- mqPortrait.addEventListener('change',function(){syncViewportMode(true);});
-}else{
- window.addEventListener('resize',function(){syncViewportMode(true);});
-}
-document.addEventListener('visibilitychange',function(){
- syncDots();
- if(!document.hidden){syncViewportMode(true);}
-});
-window.addEventListener('pageshow',function(){
- syncDots();
- syncViewportMode(true);
-});
-update();syncViewportMode(true);setAnim();
-})();
-</script>
-</body>
-</html>
+ "p5": {"c": [7, 1, 0], "t": "Certificate number differs", "e
